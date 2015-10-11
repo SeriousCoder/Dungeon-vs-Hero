@@ -1,4 +1,5 @@
 apply plugin: "java"
+apply plugin: "kotlin"
 
 sourceCompatibility = 1.6
 sourceSets.main.java.srcDirs = [ "src/" ]
@@ -28,10 +29,11 @@ task dist(type: Jar) {
 dist.dependsOn classes
 
 eclipse {
-    project {
+    def var = project {
         name = appName + "-desktop"
         linkedResource name: 'assets', type: '2', location: 'PARENT-1-PROJECT_LOC/android/assets'
     }
+    var
 }
 
 task afterEclipseImport(description: "Post processing after project generation", group: "IDE") {
@@ -43,4 +45,20 @@ task afterEclipseImport(description: "Post processing after project generation",
     printer.setPreserveWhitespace(true)
     printer.print(classpath)
   }
+}
+
+buildscript {
+    ext.kotlin_version = '0.13.1514'
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+repositories {
+    mavenCentral()
+}
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
