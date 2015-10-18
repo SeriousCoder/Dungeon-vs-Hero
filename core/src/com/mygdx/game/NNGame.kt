@@ -14,58 +14,38 @@ import com.mygdx.game.hex.HexForPolygon
 import com.mygdx.game.hex.HexPolygonDefault
 import kotlin.properties.Delegates
 import com.badlogic.gdx.ApplicationListener
+import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
+import com.badlogic.gdx.utils.viewport.FitViewport
 import com.mygdx.game.actors.Archer
+import com.mygdx.game.gameWorld.GameRenderer
+import com.mygdx.game.gameWorld.GameWorld
+import com.mygdx.game.helpers.InputHandler
 
 public class NNGame2 : ApplicationAdapter() {
-    private var batch : SpriteBatch by Delegates.notNull<SpriteBatch>()
-    private var texture : Texture by Delegates.notNull<Texture>()
-    private var polygon : PolygonSpriteBatch by Delegates.notNull<PolygonSpriteBatch>()
-    private var field : HexField by Delegates.notNull<HexField>()
-    private var hex : PolygonRegion by Delegates.notNull<PolygonRegion>()
 
-
-
-    private var stage: Stage? = null
+    private var batch : PolygonSpriteBatch by Delegates.notNull<PolygonSpriteBatch>()
+    private var world : GameWorld by Delegates.notNull<GameWorld>()
+    private var renderer : GameRenderer by Delegates.notNull<GameRenderer>()
 
     override fun create() {
-        batch = SpriteBatch()
-        texture = Texture("tile.png")
-        polygon = PolygonSpriteBatch()
-        field = HexField()
-        hex = HexPolygonDefault(field.hexR.toFloat()).hexRegion
-
-        stage = Stage()
-        Gdx.input.setInputProcessor(stage)
-
-        val myActor = Archer(100f, 300f)
-        myActor.setTouchable(Touchable.enabled)
-        stage!!.addActor(myActor)
+        batch = PolygonSpriteBatch()
+        world = GameWorld(batch)
+        renderer = GameRenderer(world, 360f, 640f)
     }
 
     override fun render() {
-        Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1f)
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-        polygon.begin()
-        for (i in 0.. field.width - 1) {
-            for (j in 0..field.height - 1) {
-                val cur = field.field[i][j]
-                polygon.draw(hex, cur.xl.toFloat(), cur.yl.toFloat())
-            }
-        }
-        polygon.end()
-        stage!!.act(Gdx.graphics.getDeltaTime())
-        stage!!.draw()
+        renderer.render()
     }
 
     override fun dispose() {
         super.dispose()
-        texture.dispose()
-        batch.dispose()
+        renderer.dispose()
+        world.dispose()
     }
 }
