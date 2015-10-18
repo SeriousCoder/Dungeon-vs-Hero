@@ -35,8 +35,8 @@ public class NNGame2 : ApplicationAdapter() {
 
     override fun create() {
         batch = PolygonSpriteBatch()
-        world = GameWorld(batch)
-        renderer = GameRenderer(world, 360f, 640f)
+        world = GameWorld(batch, HexField())
+        renderer = GameRenderer(world)
     }
 
     override fun render() {

@@ -3,11 +3,26 @@ package com.mygdx.game.helpers
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputProcessor
 import com.mygdx.game.actors.Archer
+import com.mygdx.game.hex.*
 
-class InputHandler (private val archer : Archer) : InputProcessor {
+class InputHandler (private val field : HexField, val height : Int, val resolutionMultiplier : Float) : InputProcessor {
 
-    override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-        archer.act(Gdx.graphics.getDeltaTime(), screenX, screenY)
+    override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int) : Boolean {
+        val virtualX = screenX / resolutionMultiplier
+        val virtualY = height - screenY / resolutionMultiplier
+        val hexInd = field.findHex(virtualX.toInt(), virtualY.toInt()) ?: return true
+
+        val iInd = hexInd.first
+        val jInd = hexInd.second
+
+        val actInd = field.findActorInd(iInd, jInd)
+        if (actInd != null) {
+            field.actors[actInd].act(Gdx.graphics.deltaTime)
+        }
+        else {
+            val actInd = field.activatedActorInVicinityInd(iInd, jInd) ?: return true
+            field.moveActor(actInd, field.field[iInd][jInd])
+        }
         return true // Return true to say we handled the touch.
     }
 

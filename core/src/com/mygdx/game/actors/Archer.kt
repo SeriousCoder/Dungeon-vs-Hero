@@ -6,54 +6,50 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
+import com.mygdx.game.hex.HexForLogic
 
-public class Archer(var actorX : Float, var actorY : Float) : Actor() {
+public abstract class ActorHex(var hex : HexForLogic) : Actor() {
+    var activated = false
+    var actorX = hex.xl
+    var actorY = hex.yl
+}
+
+public class Archer(hex : HexForLogic) : ActorHex(hex) {
     internal var texture = Texture(Gdx.files.internal("archer.png"))
-  //  internal var actorX = 100f
-  //  internal var actorY = 100f
+
     internal var sizeX = 40f
     internal var sizeY = 40f
-    var started = false
+
     public var waiting = false
     init {
-        setBounds(actorX, actorY, texture.getWidth().toFloat(), texture.getHeight().toFloat())
-       // setSize(40f, 40f)
-        addListener(object : InputListener() {
-            override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                (event.getTarget() as Archer).started = true
-                return true
-            }
-        })
+        setBounds(actorX, actorY, texture.width.toFloat(), texture.height.toFloat())
+//        addListener(object : InputListener() {
+//            override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+//                (event.getTarget() as Archer).started = true
+//                return true
+//            }
+//        })
     }
 
 
     override fun draw(batch: Batch, alpha: Float) {
-
-        batch.draw(texture, actorX, actorY, 40f, 40f)
+        batch.draw(texture, actorX, actorY, sizeX, sizeY)
     }
 
-    override fun act(delta: Float) {
-        if (started) {
-            //while (!Gdx.input.isTouched) {}
-            //            val xtouch = Gdx.input.x
-            //            val ytouch = Gdx.input.y
-            //            if (xtouch > 100 && ytouch > 100) actorX += 10f
-            //            if (xtouch < 100 && ytouch < 100) actorX -= 10f
-            waiting = true
-            setBounds(actorX, actorY, texture.getWidth().toFloat(), texture.getHeight().toFloat())
-            started = false
-        }
-    }
-    fun act(delta: Float, xtouch : Int, ytouch : Int) {
+//    override fun act(delta: Float) {
 //        if (started) {
-            //while (!Gdx.input.isTouched) {}
-            //            val xtouch = Gdx.input.x
-            //            val ytouch = Gdx.input.y
-            if (xtouch > 100 && ytouch > 100) actorX += 10f
-            if (xtouch < 100 && ytouch < 100) actorX -= 10f
-            waiting = true
-            setBounds(actorX, actorY, texture.getWidth().toFloat(), texture.getHeight().toFloat())
+//            //while (!Gdx.input.isTouched) {}
+//            //            val xtouch = Gdx.input.x
+//            //            val ytouch = Gdx.input.y
+//            //            if (xtouch > 100 && ytouch > 100) actorX += 10f
+//            //            if (xtouch < 100 && ytouch < 100) actorX -= 10f
+//            waiting = true
+//            setBounds(actorX, actorY, texture.getWidth().toFloat(), texture.getHeight().toFloat())
 //            started = false
 //        }
+//    }
+
+    override fun act(delta: Float) {
+        activated = !activated
     }
 }
