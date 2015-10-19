@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.*
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.mygdx.AssertLoader
 
 public class DvHScreen (val assert : AssertLoader) : Screen
@@ -22,8 +23,9 @@ public class DvHScreen (val assert : AssertLoader) : Screen
         titleStyle.font = font
 
         val title = Label("Dungeon vs Hero", titleStyle)
-        
+
         title.setPosition(100f, 350f)
+
 
         stage.addActor(title)
 
