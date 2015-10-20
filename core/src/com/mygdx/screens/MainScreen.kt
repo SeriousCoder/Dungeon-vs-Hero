@@ -9,18 +9,20 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.utils.viewport.FitViewport
 import com.mygdx.Helpers.AssertLoader
 import com.mygdx.game.DvHGame
 
 public class MainScreen(val assert : AssertLoader, val game : DvHGame) : Screen
 {
     private val batcher = SpriteBatch()
-    private val stage   = Stage()
+    private val stage   = Stage(FitViewport(360f, 640f), batcher)
 
     val font = assert.generateFont("Doux Medium.ttf", 40, Color.WHITE)
 
     init
     {
+        stage.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true);
         val play = ImageButton(assert.getImageButtonStyle(0, 0, 0, 0, 150, 150))
 
         play.addListener(object : ClickListener()
@@ -82,6 +84,7 @@ public class MainScreen(val assert : AssertLoader, val game : DvHGame) : Screen
 
         stage.act(delta)
         stage.draw()
+        stage.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true);
     }
 
     override fun resume() {
