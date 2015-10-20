@@ -1,33 +1,53 @@
-package com.mygdx.Screen
+package com.mygdx.screens
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
-import com.mygdx.AssertLoader
+import com.mygdx.Helpers.AssertLoader
+import com.mygdx.game.DvHGame
 
-public class DvHScreen (val assert : AssertLoader) : Screen
+public class MainScreen(val assert : AssertLoader, val game : DvHGame) : Screen
 {
     private val batcher = SpriteBatch()
     private val stage   = Stage()
 
-    val font = assert.generateFont("Doux Medium.ttf", 60, Color.WHITE)
+    val font = assert.generateFont("Doux Medium.ttf", 40, Color.WHITE)
 
     init
     {
+        val play = ImageButton(assert.getImageButtonStyle(0, 0, 0, 0, 150, 150))
+
+        play.addListener(object : ClickListener()
+        {
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                game.screen = LevelScreen(assert, game)
+            }
+        })
+
         val titleStyle = Label.LabelStyle()
         titleStyle.font = font
 
-        val title = Label("Dungeon vs Hero", titleStyle)
+        val title1 = Label("Dungeon", titleStyle)
+        val title2 = Label("vs", titleStyle)
+        val title3 = Label("Hero", titleStyle)
 
-        title.setPosition(100f, 350f)
+        title1.setPosition(105f, 400f)
+        title2.setPosition(160f, 430f)
+        title3.setPosition(135f, 460f)
+
+        play.setPosition(110f, 120f)
 
 
-        stage.addActor(title)
+        stage.addActor(title1)
+        stage.addActor(title2)
+        stage.addActor(title3)
+        stage.addActor(play)
 
         Gdx.input.inputProcessor = stage
     }
@@ -48,14 +68,14 @@ public class DvHScreen (val assert : AssertLoader) : Screen
 
     override fun render(delta: Float)
     {
-        Gdx.gl.glClearColor(10/255.0f, 15/255.0f, 230/255.0f, 1f)
+        Gdx.gl.glClearColor(0/255.0f, 0/255.0f, 0/255.0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
         val fps = (1/delta)
 
         batcher.begin()
         batcher.disableBlending()
-        batcher.draw(assert.startImage, 0f, 0f)
+        batcher.draw(assert.backgroungs, 0f, 0f)
         batcher.end()
 
         Gdx.app.log("FPS", fps.toString() + "")

@@ -8,6 +8,7 @@ fun main(arg: Array<String>) {
     val config = LwjglApplicationConfiguration()
 
     config.title = "Dungeon vs Hero"
-
+    config.height = 640
+    config.width = 360
     LwjglApplication(DvHGame(), config)
 }

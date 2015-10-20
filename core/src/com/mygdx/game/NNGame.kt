@@ -6,8 +6,8 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.mygdx.AssertLoader
-import com.mygdx.Screen.DvHScreen
+import com.mygdx.Helpers.AssertLoader
+import com.mygdx.screens.*
 
 
 /*public class NNGame2 : ApplicationAdapter() {
@@ -31,7 +31,7 @@ public class DvHGame() : Game() {
         Gdx.app.log("Game", "created")
         val assert = AssertLoader()
         assert.load()
-        setScreen(DvHScreen(assert))
+        setScreen(MainScreen(assert, this))
     }
 
     public override fun dispose() {
