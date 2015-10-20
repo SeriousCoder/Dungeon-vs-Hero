@@ -25,11 +25,19 @@ class GameWorld(public val batch : PolygonSpriteBatch, public val field : HexFie
 
         val myActor = Archer(field.field[5][5])
         myActor.touchable = Touchable.enabled
+
+        val myActor2 = Archer(field.field[0][0])
+        myActor.touchable = Touchable.enabled
+
         Gdx.input.inputProcessor = InputHandler(field, virtualHeight.toInt(), resolutionMultiplier)
 
         field.actors.add(myActor)
         myActor.hex.occupied = true
         stage.addActor(field.actors[0])
+
+        field.actors.add(myActor2)
+        myActor2.hex.occupied = true
+        stage.addActor(field.actors[1])
     }
 
     fun update() {

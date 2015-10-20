@@ -2,7 +2,6 @@ package com.mygdx.game.helpers
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputProcessor
-import com.mygdx.game.actors.Archer
 import com.mygdx.game.hex.*
 
 class InputHandler (private val field : HexField, val height : Int, val resolutionMultiplier : Float) : InputProcessor {
@@ -17,7 +16,8 @@ class InputHandler (private val field : HexField, val height : Int, val resoluti
 
         val actInd = field.findActorInd(iInd, jInd)
         if (actInd != null) {
-            field.actors[actInd].act(Gdx.graphics.deltaTime)
+            for (i in field.actors) i.deactivate()
+            field.actors[actInd].changeActivation()
         }
         else {
             val actInd = field.activatedActorInVicinityInd(iInd, jInd) ?: return true

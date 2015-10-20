@@ -32,3 +32,15 @@ public class HexPolygonDefault (private val r : Float) : HexForPolygon(r), Dispo
         texture.dispose()
     }
 }
+
+public class HexPolygonActivated (private val r : Float) : HexForPolygon(r), Disposable {
+    private val texture   = Texture("red.png")
+    private val triangles = EarClippingTriangulator().computeTriangles(vertices).toArray()
+    private val tr        = TextureRegion(texture)
+
+    public  val hexRegion = PolygonRegion(tr, vertices, triangles)
+
+    override public fun dispose() {
+        texture.dispose()
+    }
+}
