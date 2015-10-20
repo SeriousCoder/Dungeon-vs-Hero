@@ -1,6 +1,6 @@
-package com.mygdx.game.hex
+package com.mygdx.game.helpers
 
-import com.mygdx.game.actors.ActorHex
+import com.mygdx.game.gameObjects.ActorHex
 
 public class HexForLogic(val x : Float, val y : Float, val R: Float, val i : Int, val j : Int) {
     public val r  = R * Math.sqrt(3.0) / 2

@@ -1,4 +1,4 @@
-package com.mygdx.game.hex
+package com.mygdx.game.helpers
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.PolygonRegion

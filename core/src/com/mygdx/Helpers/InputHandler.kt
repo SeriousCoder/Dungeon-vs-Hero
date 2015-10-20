@@ -2,8 +2,6 @@
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputProcessor
-import com.mygdx.game.actors.Archer
-import com.mygdx.game.hex.*
 
 class InputHandler (private val field : HexField, val height : Int, val resolutionMultiplier : Float) : InputProcessor {
 

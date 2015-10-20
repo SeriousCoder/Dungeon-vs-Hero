@@ -10,25 +10,25 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.viewport.FitViewport
-import com.mygdx.Helpers.AssertLoader
+import com.mygdx.Helpers.AssetLoader
 import com.mygdx.game.DvHGame
 
-public class MainScreen(val assert : AssertLoader, val game : DvHGame) : Screen
+public class MainScreen(val asset: AssetLoader, val game : DvHGame) : Screen
 {
     private val batcher = SpriteBatch()
     private val stage   = Stage(FitViewport(360f, 640f), batcher)
 
-    val font = assert.generateFont("Doux Medium.ttf", 40, Color.WHITE)
+    val font = asset.generateFont("Doux Medium.ttf", 40, Color.WHITE)
 
     init
     {
         stage.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true);
-        val play = ImageButton(assert.getImageButtonStyle(0, 0, 0, 0, 150, 150))
+        val play = ImageButton(asset.getImageButtonStyle(0, 0, 0, 0, 150, 150))
 
         play.addListener(object : ClickListener()
         {
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                game.screen = LevelScreen(assert, game)
+                game.screen = LevelScreen(asset, game)
             }
         })
 
@@ -76,8 +76,8 @@ public class MainScreen(val assert : AssertLoader, val game : DvHGame) : Screen
         val fps = (1/delta)
 
         batcher.begin()
-        batcher.disableBlending()
-        batcher.draw(assert.backgroungs, 0f, 0f)
+     //   batcher.disableBlending()
+        batcher.draw(asset.backgroungs, 0f, 0f)
         batcher.end()
 
         Gdx.app.log("FPS", fps.toString() + "")
