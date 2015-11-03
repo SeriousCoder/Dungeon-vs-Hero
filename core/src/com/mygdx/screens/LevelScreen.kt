@@ -17,9 +17,6 @@ import kotlin.properties.Delegates
 public class LevelScreen(val asset: AssetLoader, game : DvHGame) : Screen
 {
     private var batch : PolygonSpriteBatch by Delegates.notNull<PolygonSpriteBatch>()
-
-    private var polygon : PolygonSpriteBatch by Delegates.notNull<PolygonSpriteBatch>()
-    private var field : HexField by Delegates.notNull<HexField>()
     private var renderer : GameRenderer by Delegates.notNull<GameRenderer>()
 
     init {

@@ -15,7 +15,8 @@ class InputHandler (private val field : HexField, val height : Int, val resoluti
 
         val actInd = field.findActorInd(iInd, jInd)
         if (actInd != null) {
-            field.actors[actInd].act(Gdx.graphics.deltaTime)
+            for (i in 0..field.actors.size() - 1) if (i != actInd) field.actors[i].deactivate()
+            field.actors[actInd].changeActivation()
         }
         else {
             val actInd = field.activatedActorInVicinityInd(iInd, jInd) ?: return true

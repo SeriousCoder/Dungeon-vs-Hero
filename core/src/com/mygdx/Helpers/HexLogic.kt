@@ -8,6 +8,17 @@ public class HexForLogic(val x : Float, val y : Float, val R: Float, val i : Int
     public val yl = (y - r).toFloat()//R * Math.sqrt(3.0) / 2
 
     public var occupied = false
+
+    public var activated = false
+    public fun changeActivation() {
+        activated = !activated
+    }
+    public fun activate() {
+        activated = true
+    }
+    public fun deactivate() {
+        activated = false
+    }
 }
 
 public class HexField() {
@@ -97,6 +108,7 @@ public class HexField() {
 
     public fun moveActor(actInd : Int, hex : HexForLogic) {
         actors[actInd].hex.occupied = false
+        actors[actInd].hex.deactivate()
         actors[actInd].hex = hex
         actors[actInd].hex.occupied = true
         actors[actInd].actorX = hex.xl

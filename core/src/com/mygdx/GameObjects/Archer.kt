@@ -12,6 +12,20 @@ public abstract class ActorHex(var hex : HexForLogic) : Actor() {
     var activated = false
     var actorX = hex.xl
     var actorY = hex.yl
+    fun changeActivation () {
+        if (activated) deactivate()
+        else activate()
+    }
+
+    fun activate() {
+        activated = true
+        hex.activate()
+    }
+
+    fun deactivate() {
+        activated = false
+        hex.deactivate()
+    }
 }
 
 public class Archer(hex : HexForLogic) : ActorHex(hex) {
