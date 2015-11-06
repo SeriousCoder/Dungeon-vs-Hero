@@ -45,7 +45,6 @@ public class MainScreen(val asset: AssetLoader, val game : DvHGame) : Screen
 
         play.setPosition(110f, 120f)
 
-
         stage.addActor(title1)
         stage.addActor(title2)
         stage.addActor(title3)
@@ -76,7 +75,6 @@ public class MainScreen(val asset: AssetLoader, val game : DvHGame) : Screen
         val fps = (1/delta)
 
         batcher.begin()
-     //   batcher.disableBlending()
         batcher.draw(asset.backgroungs, 0f, 0f)
         batcher.end()
 

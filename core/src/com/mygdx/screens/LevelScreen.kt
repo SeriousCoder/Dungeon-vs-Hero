@@ -1,16 +1,12 @@
 package com.mygdx.screens
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Screen
-import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.g2d.PolygonRegion
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.mygdx.Helpers.AssetLoader
 import com.mygdx.game.DvHGame
 import com.mygdx.game.GameWorld.GameRenderer
 import com.mygdx.game.GameWorld.GameWorld
-import com.mygdx.game.helpers.HexField
-import com.mygdx.game.helpers.HexPolygonDefault
+import com.mygdx.game.Helpers.HexField
 import kotlin.properties.Delegates
 
 
@@ -27,7 +23,6 @@ public class LevelScreen(val asset: AssetLoader, game : DvHGame) : Screen
 
     override fun render(delta: Float) {
         renderer.render()
-       // asset.gameWorld!!.update()
     }
 
     override fun dispose() {

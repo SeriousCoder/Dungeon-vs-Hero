@@ -1,4 +1,4 @@
-package com.mygdx.game.helpers
+package com.mygdx.game.Helpers
 
 import com.mygdx.game.gameObjects.ActorHex
 

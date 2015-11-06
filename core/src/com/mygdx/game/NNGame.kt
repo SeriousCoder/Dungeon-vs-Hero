@@ -22,7 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.utils.viewport.FitViewport
-import com.mygdx.game.helpers.InputHandler
+import com.mygdx.game.Helpers.InputHandler
 
 /*public class NNGame2 : ApplicationAdapter() {
 

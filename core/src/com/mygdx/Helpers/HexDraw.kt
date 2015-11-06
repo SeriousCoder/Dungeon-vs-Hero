@@ -1,11 +1,10 @@
-package com.mygdx.game.helpers
+package com.mygdx.game.Helpers
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.PolygonRegion
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.EarClippingTriangulator
 import com.badlogic.gdx.utils.Disposable
-import com.sun.media.jfxmediaimpl.MediaDisposer
 
 public abstract class HexForPolygon(private val r : Float) {
     //radius of circumscribed circle
@@ -33,7 +32,7 @@ public class HexPolygonDefault (private val r : Float) : HexForPolygon(r), Dispo
     }
 }
 public class HexPolygonActivated (private val r : Float) : HexForPolygon(r), Disposable {
-    private val texture   = Texture("red.png")
+    private val texture   = Texture("Data/Images/red.png")
     private val triangles = EarClippingTriangulator().computeTriangles(vertices).toArray()
     private val tr        = TextureRegion(texture)
 

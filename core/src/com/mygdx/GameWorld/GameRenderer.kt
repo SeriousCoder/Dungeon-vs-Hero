@@ -9,9 +9,9 @@ import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
-import com.mygdx.game.helpers.HexField
-import com.mygdx.game.helpers.HexPolygonActivated
-import com.mygdx.game.helpers.HexPolygonDefault
+import com.mygdx.game.Helpers.HexField
+import com.mygdx.game.Helpers.HexPolygonActivated
+import com.mygdx.game.Helpers.HexPolygonDefault
 import kotlin.properties.Delegates
 
 class GameRenderer(private val gameWorld : GameWorld) {

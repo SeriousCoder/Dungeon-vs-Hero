@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
-import com.mygdx.game.helpers.HexForLogic
+import com.mygdx.game.Helpers.HexForLogic
 
 public abstract class ActorHex(var hex : HexForLogic) : Actor() {
     var activated = false

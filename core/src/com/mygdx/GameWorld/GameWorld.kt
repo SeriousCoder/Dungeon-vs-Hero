@@ -6,8 +6,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.mygdx.game.gameObjects.Archer
-import com.mygdx.game.helpers.InputHandler
-import com.mygdx.game.helpers.HexField
+import com.mygdx.game.Helpers.InputHandler
+import com.mygdx.game.Helpers.HexField
 import kotlin.properties.Delegates
 
 class GameWorld(public val batch : PolygonSpriteBatch, public val field : HexField) {
