@@ -20,6 +20,7 @@ class GameRenderer(private val gameWorld : GameWorld) {
 	private var field : HexField by Delegates.notNull<HexField>()
 	private var hex : PolygonRegion by Delegates.notNull<PolygonRegion>()
     private var hexActive : PolygonRegion by Delegates.notNull<PolygonRegion>()
+    private var curPlayer = 0
 
     init {
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1f)
@@ -45,6 +46,8 @@ class GameRenderer(private val gameWorld : GameWorld) {
             }
         }
         polygon.end()
+
+        if (gameWorld.players[curPlayer].getInput()) curPlayer = 1 - curPlayer
 
         gameWorld.update()
     }

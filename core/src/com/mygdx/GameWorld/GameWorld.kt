@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport
 import com.mygdx.game.gameObjects.Archer
 import com.mygdx.game.Helpers.InputHandler
 import com.mygdx.game.Helpers.HexField
+import com.mygdx.game.Player
 import kotlin.properties.Delegates
 
 class GameWorld(public val batch : PolygonSpriteBatch, public val field : HexField) {
@@ -17,7 +18,10 @@ class GameWorld(public val batch : PolygonSpriteBatch, public val field : HexFie
     //because of line below, it'll work correctly only on 16:9 resolutions.
     val resolutionMultiplier = Gdx.graphics.width / virtualWidth
     private var stage: Stage by Delegates.notNull<Stage>()
-
+    val players = listOf(Player(0, InputHandler(field, virtualHeight.toInt(), resolutionMultiplier, 0)),
+            Player(1, InputHandler(field, virtualHeight.toInt(), resolutionMultiplier, 1)))
+  //  val player0 = Player(0, InputHandler(field, virtualHeight.toInt(), resolutionMultiplier))
+  //  val player1 = Player(1, InputHandler(field, virtualHeight.toInt(), resolutionMultiplier))
     init {
         stage = Stage(FitViewport(virtualWidth, virtualHeight), batch)
         stage.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true);
@@ -29,7 +33,7 @@ class GameWorld(public val batch : PolygonSpriteBatch, public val field : HexFie
         val myActor2 = Archer(field.field[0][0], 0)
         myActor.touchable = Touchable.enabled
 
-        Gdx.input.inputProcessor = InputHandler(field, virtualHeight.toInt(), resolutionMultiplier)
+        Gdx.input.inputProcessor = players[0].inHandler
 
         field.actors.add(myActor)
         myActor.hex.occupied = true
