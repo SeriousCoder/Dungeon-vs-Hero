@@ -39,9 +39,9 @@ public class MainScreen(val asset: AssetLoader, val game : DvHGame) : Screen
         val title2 = Label("vs", titleStyle)
         val title3 = Label("Hero", titleStyle)
 
-        title1.setPosition(105f, 400f)
+        title1.setPosition(105f, 460f)
         title2.setPosition(160f, 430f)
-        title3.setPosition(135f, 460f)
+        title3.setPosition(135f, 400f)
 
         play.setPosition(110f, 120f)
 

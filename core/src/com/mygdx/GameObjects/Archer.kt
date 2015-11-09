@@ -8,10 +8,12 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.mygdx.game.Helpers.HexForLogic
 
-public abstract class ActorHex(var hex : HexForLogic) : Actor() {
+public abstract class ActorHex(var hex : HexForLogic, val owner : Int) : Actor() {
     var activated = false
     var actorX = hex.xl
     var actorY = hex.yl
+    val actionPointsMax = 2
+
     fun changeActivation () {
         if (activated) deactivate()
         else activate()
@@ -28,7 +30,7 @@ public abstract class ActorHex(var hex : HexForLogic) : Actor() {
     }
 }
 
-public class Archer(hex : HexForLogic) : ActorHex(hex) {
+public class Archer(hex : HexForLogic, owner : Int) : ActorHex(hex, owner) {
     internal var texture = Texture(Gdx.files.internal("Data/Images/archer.png"))
 
     internal var sizeX = 40f
