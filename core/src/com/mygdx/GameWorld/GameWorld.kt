@@ -2,8 +2,12 @@ package com.mygdx.game.GameWorld
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
+import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.mygdx.game.gameObjects.Archer
 import com.mygdx.game.Helpers.InputHandler
@@ -16,10 +20,11 @@ class GameWorld(public val batch : PolygonSpriteBatch, public val field : HexFie
     val virtualWidth  = 360f
     val virtualHeight = 640f
     //because of line below, it'll work correctly only on 16:9 resolutions.
-    val resolutionMultiplier = Gdx.graphics.width / virtualWidth
+   // val resolutionMultiplier = Gdx.graphics.width / virtualWidth
     private var stage: Stage by Delegates.notNull<Stage>()
-    val players = listOf(Player(0, InputHandler(field, virtualHeight.toInt(), resolutionMultiplier, 0)),
-            Player(1, InputHandler(field, virtualHeight.toInt(), resolutionMultiplier, 1)))
+
+    val players = listOf(Player(0, InputHandler(field, virtualHeight.toInt(), virtualWidth, 0)),
+            Player(1, InputHandler(field, virtualHeight.toInt(), virtualWidth, 1)))
   //  val player0 = Player(0, InputHandler(field, virtualHeight.toInt(), resolutionMultiplier))
   //  val player1 = Player(1, InputHandler(field, virtualHeight.toInt(), resolutionMultiplier))
     init {
@@ -45,7 +50,13 @@ class GameWorld(public val batch : PolygonSpriteBatch, public val field : HexFie
     }
 
     fun update() {
-        stage.draw()
+        //stage.draw()
+        if (Gdx.input.inputProcessor is Stage) {
+            (Gdx.input.inputProcessor as Stage).draw()
+        }
+        else {
+            stage.draw()
+        }
         stage.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true);
     }
 

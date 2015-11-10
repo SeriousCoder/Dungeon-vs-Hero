@@ -14,8 +14,11 @@ public class Player(val playerInd : Int, inputHandler : InputHandler?) {
         else inHandler = inputHandler
     }
 
-    public fun getInput() : Boolean {
+    public fun grabInput() {
         Gdx.input.inputProcessor = inHandler
+    }
+
+    public fun getInput() : Boolean {
         if (inHandler.dataHasBeenGot) {
             inHandler.dataHasBeenGot = false
             return true

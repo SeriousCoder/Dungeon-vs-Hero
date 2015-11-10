@@ -47,7 +47,10 @@ class GameRenderer(private val gameWorld : GameWorld) {
         }
         polygon.end()
 
-        if (gameWorld.players[curPlayer].getInput()) curPlayer = 1 - curPlayer
+        if (gameWorld.players[curPlayer].getInput()) {
+            curPlayer = 1 - curPlayer
+            gameWorld.players[curPlayer].grabInput()
+        }
 
         gameWorld.update()
     }
