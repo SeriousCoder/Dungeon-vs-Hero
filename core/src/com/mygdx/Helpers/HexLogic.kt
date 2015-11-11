@@ -1,6 +1,6 @@
 package com.mygdx.game.Helpers
 
-import com.mygdx.game.gameObjects.ActorHex
+import com.mygdx.GameObjects.ActorHex
 
 public class HexForLogic(val x : Float, val y : Float, val R: Float, val i : Int, val j : Int) {
     public val r  = R * Math.sqrt(3.0) / 2
@@ -44,7 +44,11 @@ public class HexField() {
             ).toList()}
     ).toList()
 
-    public val actors = arrayListOf<ActorHex>()
+    public  val actors = arrayListOf<ActorHex>()//shouldn't be public; temporary workaround
+    public fun addActor(actor : ActorHex) : Int{
+        actors.add(actor)
+        return actors.lastIndex
+    }
 
     public fun findHex(x : Int, y : Int) : Pair<Int, Int>?{
         for (i in 0..width - 1) {
@@ -111,8 +115,8 @@ public class HexField() {
         actors[actInd].hex.deactivate()
         actors[actInd].hex = hex
         actors[actInd].hex.occupied = true
-        actors[actInd].actorX = hex.xl
-        actors[actInd].actorY = hex.yl
+        actors[actInd].actorX = hex.xl + 6
+        actors[actInd].actorY = hex.yl + 4
         actors[actInd].activated = false
     }
 }

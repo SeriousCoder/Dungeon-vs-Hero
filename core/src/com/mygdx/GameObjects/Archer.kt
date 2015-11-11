@@ -3,32 +3,9 @@ package com.mygdx.game.gameObjects
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.InputListener
+import com.mygdx.GameObjects.ActorHex
 import com.mygdx.game.Helpers.HexForLogic
-
-public abstract class ActorHex(var hex : HexForLogic, val owner : Int) : Actor() {
-    var activated = false
-    var actorX = hex.xl
-    var actorY = hex.yl
-    val actionPointsMax = 2
-
-    fun changeActivation () {
-        if (activated) deactivate()
-        else activate()
-    }
-
-    fun activate() {
-        activated = true
-        hex.activate()
-    }
-
-    fun deactivate() {
-        activated = false
-        hex.deactivate()
-    }
-}
+import java.util.*
 
 public class Archer(hex : HexForLogic, owner : Int) : ActorHex(hex, owner) {
     internal var texture = Texture(Gdx.files.internal("Data/Images/archer.png"))
@@ -38,6 +15,9 @@ public class Archer(hex : HexForLogic, owner : Int) : ActorHex(hex, owner) {
 
     public var waiting = false
     init {
+        skills = arrayListOf("Quick shot", "Jump")
+        skillPics.put("Quick shot", Pair("Quick_shot", "Quick_shot_pressed"))
+        skillPics.put("Jump", Pair("Jump_archer", "Jump_archer_pressed"))
         setBounds(actorX, actorY, texture.width.toFloat(), texture.height.toFloat())
 //        addListener(object : InputListener() {
 //            override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
@@ -49,7 +29,7 @@ public class Archer(hex : HexForLogic, owner : Int) : ActorHex(hex, owner) {
 
 
     override fun draw(batch: Batch, alpha: Float) {
-        batch.draw(texture, actorX, actorY, sizeX, sizeY)
+        batch.draw(texture, actorX, actorY, sizeX - 15, sizeY -15)
     }
 
 //    override fun act(delta: Float) {

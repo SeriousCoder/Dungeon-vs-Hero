@@ -9,6 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.viewport.FitViewport
+import com.mygdx.GameObjects.ActorHex
+import com.mygdx.GameObjects.DemonFighter
 import com.mygdx.game.gameObjects.Archer
 import com.mygdx.game.Helpers.InputHandler
 import com.mygdx.game.Helpers.HexField
@@ -23,39 +25,36 @@ class GameWorld(public val batch : PolygonSpriteBatch, public val field : HexFie
    // val resolutionMultiplier = Gdx.graphics.width / virtualWidth
     private var stage: Stage by Delegates.notNull<Stage>()
 
-    val players = listOf(Player(0, InputHandler(field, virtualHeight.toInt(), virtualWidth, 0)),
-            Player(1, InputHandler(field, virtualHeight.toInt(), virtualWidth, 1)))
+    val players = listOf(Player(0, field, virtualHeight, virtualWidth),
+            Player(1, field, virtualHeight, virtualWidth))
   //  val player0 = Player(0, InputHandler(field, virtualHeight.toInt(), resolutionMultiplier))
   //  val player1 = Player(1, InputHandler(field, virtualHeight.toInt(), resolutionMultiplier))
     init {
-        stage = Stage(FitViewport(virtualWidth, virtualHeight), batch)
-        stage.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true);
+      stage = Stage(FitViewport(virtualWidth, virtualHeight), batch)
+      stage.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true);
 
 
-        val myActor = Archer(field.field[5][5], 1)
-        myActor.touchable = Touchable.enabled
+      val myActor = Archer(field.field[5][5], 1)
+      val myActor2 = DemonFighter(field.field[0][0], 0)
+      addActor(myActor)
+      addActor(myActor2)
 
-        val myActor2 = Archer(field.field[0][0], 0)
-        myActor.touchable = Touchable.enabled
+      Gdx.input.inputProcessor = players[0].inHandler
+    }
 
-        Gdx.input.inputProcessor = players[0].inHandler
-
-        field.actors.add(myActor)
-        myActor.hex.occupied = true
-        stage.addActor(field.actors[0])
-
-        field.actors.add(myActor2)
-        myActor2.hex.occupied = true
-        stage.addActor(field.actors[1])
+    fun addActor(actor : ActorHex) {
+        val actorInd = field.addActor(actor)
+        actor.hex.occupied = true
+        players[actor.owner].addActorInd(actorInd)
+        stage.addActor(actor)
     }
 
     fun update() {
-        //stage.draw()
+        stage.draw()
         if (Gdx.input.inputProcessor is Stage) {
-            (Gdx.input.inputProcessor as Stage).draw()
-        }
-        else {
-            stage.draw()
+            val curStage = Gdx.input.inputProcessor as Stage
+            curStage.draw()
+            curStage.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true);
         }
         stage.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true);
     }
