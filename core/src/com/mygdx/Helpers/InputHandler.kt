@@ -134,8 +134,10 @@ class InputHandler (private val field : HexField, val virtualHeight : Float, val
                 for (i in 0..field.actors.size - 1) if (i != actInd) field.actors[i].deactivate()
                 return true
             }
-            field.moveActor(actInd, field.field[iInd][jInd])
-            dataHasBeenGot = true
+            if (!field.field[iInd][jInd].occupied) {
+                field.moveActor(actInd, field.field[iInd][jInd])
+                dataHasBeenGot = true
+            }
         }
         return true // Return true to say we handled the touch.
     }
