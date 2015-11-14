@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.mygdx.GameObjects.ActorHex
 import com.mygdx.GameObjects.DemonFighter
+import com.mygdx.Helpers.SkillExecutor
 import com.mygdx.game.gameObjects.Archer
 import com.mygdx.game.Helpers.InputHandler
 import com.mygdx.game.Helpers.HexField
@@ -25,8 +26,8 @@ class GameWorld(public val batch : PolygonSpriteBatch, public val field : HexFie
    // val resolutionMultiplier = Gdx.graphics.width / virtualWidth
     private var stage: Stage by Delegates.notNull<Stage>()
 
-    val players = listOf(Player(0, field, virtualHeight, virtualWidth),
-            Player(1, field, virtualHeight, virtualWidth))
+    val players = listOf(Player(0, field, SkillExecutor(this, 0), virtualHeight, virtualWidth),
+            Player(1, field, SkillExecutor(this, 1), virtualHeight, virtualWidth))
   //  val player0 = Player(0, InputHandler(field, virtualHeight.toInt(), resolutionMultiplier))
   //  val player1 = Player(1, InputHandler(field, virtualHeight.toInt(), resolutionMultiplier))
     init {

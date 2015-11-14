@@ -75,6 +75,17 @@ public class HexField() {
         return null
     }
 
+    public fun findActorInd(i : Int, j : Int) : Int?{
+        if (field[i][j].occupied) {
+            for (k in 0..actors.size - 1) {
+                val cur = actors[k]
+                if (cur.hex.i == i && cur.hex.j == j)
+                    return k
+            }
+        }
+        return null
+    }
+
     public fun activatedActorInVicinityInd(i : Int, j : Int, owner : Int) : Int? {
         //returns index of first activated actor found in 6 nearby hexes
         val searchAr = arrayListOf<Pair<Int, Int>>()

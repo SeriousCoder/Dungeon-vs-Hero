@@ -4,9 +4,10 @@ import com.badlogic.gdx.Gdx
 import com.mygdx.game.Helpers.HexField
 import com.mygdx.game.Helpers.InputHandler
 import com.mygdx.GameObjects.ActorHex
+import com.mygdx.Helpers.SkillExecutor
 import kotlin.properties.Delegates
 
-public class Player(val playerInd : Int, field : HexField, virtualHeight : Float,
+public class Player(val playerInd : Int, field : HexField, val skillExec: SkillExecutor, virtualHeight : Float,
                     virtualWidth : Float, private var isAI : Boolean= false) {
     //if inputHandler == null, it's an AI player.
     //NO actionPoints!!! They belong to actors!
@@ -14,7 +15,7 @@ public class Player(val playerInd : Int, field : HexField, virtualHeight : Float
     var actorIndices = arrayListOf<Int>()
     var actorsNum = 0
     init {
-        if (!isAI) inHandler = InputHandler(field, virtualHeight, virtualWidth, this)
+        if (!isAI) inHandler = InputHandler(field, skillExec, virtualHeight, virtualWidth, this)
     }
 
     public fun fieldActorIndToPlayerActorInd(ind : Int) : Int {
@@ -27,7 +28,7 @@ public class Player(val playerInd : Int, field : HexField, virtualHeight : Float
 
     public fun addActorInd(actorInd : Int) {
         actorIndices.add(actorInd)
-        inHandler.watchForNewActors()
+        inHandler.addNewActorSkills()
         actorsNum++
     }
 
