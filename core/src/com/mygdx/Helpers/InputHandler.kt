@@ -34,7 +34,7 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
 
     class SkillBeingUsedData(
         val skillName : String,
-        val fieldActorInd : Int,
+        val playerActorInd : Int,
         val iFst: Int,
         val jFst: Int
     ) {
@@ -73,7 +73,7 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
                     val iInd = field.actors[newActorInd].hex.i
                     val jInd = field.actors[newActorInd].hex.j
 
-                    curSkill = SkillBeingUsedData(skillName, newActorInd, iInd, jInd)
+                    curSkill = SkillBeingUsedData(skillName, player.fieldActorIndToPlayerActorInd(newActorInd), iInd, jInd)
 
                     val a : ClickListener = this
                     Gdx.input.inputProcessor = getThisInputHandler()
@@ -133,7 +133,7 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
                 if (skillExec.useSkill(curSkillVal)) {
                     curSkill = null
                     deactivateActorsExcept(-1)
-                    for (btn in actorsSkillsBtns[actIndInField])
+                    for (btn in actorsSkillsBtns[curSkillVal.playerActorInd])
                         btn.isVisible = false
                     dataHasBeenGot = true
                 }
@@ -161,6 +161,8 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
                         curSkillVal.jSnd = field.actors[actEnemyInd].hex.j
                         if (skillExec.useSkill(curSkillVal)) {
                             curSkill = null
+                            for (btn in actorsSkillsBtns[curSkillVal.playerActorInd])
+                                btn.isVisible = false
                             dataHasBeenGot = true
                         }
                 }

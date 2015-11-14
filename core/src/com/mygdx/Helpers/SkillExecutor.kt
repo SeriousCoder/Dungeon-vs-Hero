@@ -10,6 +10,7 @@ public class SkillExecutor(private val Gameworld : GameWorld, private val execut
     public fun useSkill(skillName : String, X_executor : Int, Y_executor : Int, X_target : Int, Y_target : Int) : Boolean {
         when (skillName) {
             "Quick shot" -> return QuickShot(X_executor, Y_executor, X_target, Y_target)
+            "Stab" -> return Stab(X_executor, Y_executor, X_target, Y_target)
         }
         return false
     }
@@ -19,6 +20,9 @@ public class SkillExecutor(private val Gameworld : GameWorld, private val execut
                 skillData.iSnd ?: throw Exception(), skillData.jSnd?: throw Exception())
     }
     public fun QuickShot( X_executor : Int, Y_executor : Int, X_target : Int, Y_target : Int) : Boolean{
+        return true
+    }
+    public fun Stab( X_executor : Int, Y_executor : Int, X_target : Int, Y_target : Int) : Boolean{
         return true
     }
 }
