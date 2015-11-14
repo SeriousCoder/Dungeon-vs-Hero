@@ -21,18 +21,21 @@ import kotlin.properties.Delegates
 class InputHandler (private val field : HexField, val virtualHeight : Float, val virtualWidth : Float, val player: Player) : InputProcessor {
     var dataHasBeenGot = false
     private var stageUI: Stage by Delegates.notNull<Stage>()
-    val actorsSkills = arrayListOf<ArrayList<ImageTextButton>>()
+    val actorsSkillsBtns = arrayListOf<ArrayList<ImageTextButton>>()
     val asset = AssetLoader()
   //  val actorsSkills : ArrayList<ArrayList<ImageTextButton>> by Delegates.notNull<ArrayList<ArrayList<ImageTextButton>>>()
     //list of lists of button for skills of actors. One outer list - one actor. One inner list - buttons of his skills.
 
-    private inner class clickHelper(val inh : InputHandler) : ClickListener() {
+    private inner class changerUIStageToDefault(val inh : InputHandler) : ClickListener() {
         override fun touchDown(event : InputEvent , x : Float , y: Float, pointer : Int, button : Int) : Boolean{
             val resolutionMultiplier = Gdx.graphics.width / virtualWidth
             val screenY = Gdx.graphics.height - resolutionMultiplier * y
             val screenX = x * resolutionMultiplier
             if (y > 75) {
                 Gdx.input.inputProcessor = inh
+                for (i in actorsSkillsBtns)
+                    for (j in i)
+                        j.isVisible = false
                 return inh.touchDown(screenX.toInt(), screenY.toInt(), 0, 0)
             }
             return true
@@ -43,11 +46,12 @@ class InputHandler (private val field : HexField, val virtualHeight : Float, val
         val buttonsAtlas = TextureAtlas("Data/UI/SkillButtons.pack"); //** button atlas image **//
         val buttonSkin = Skin(buttonsAtlas)
         val font = asset.generateFont("Doux Medium.ttf", 15, Color.RED)
-        for (i in player.actorIndices) {
+        for (i in player.actorsNum .. player.actorIndices.size - 1) {
             val tempAr = arrayListOf<ImageTextButton>()
-            for (j in 0..field.actors[i].skills.size - 1) {
-                val skillName = field.actors[i].skills[j]
-                val skillPicsPair = field.actors[i].skillPics[skillName] ?: throw  Exception()//correct later
+            val actorInd = player.actorIndices[i]
+            for (j in 0..field.actors[actorInd].skills.size - 1) {
+                val skillName = field.actors[actorInd].skills[j]
+                val skillPicsPair = field.actors[actorInd].skillPics[skillName] ?: throw  Exception()//correct later
                 val style = ImageTextButton.ImageTextButtonStyle()
                 style.up = buttonSkin.getDrawable(skillPicsPair.first)
                 style.down = buttonSkin.getDrawable(skillPicsPair.second)
@@ -64,8 +68,9 @@ class InputHandler (private val field : HexField, val virtualHeight : Float, val
                 //        button.isVisible = false
                 stageUI.addActor(button)
                 tempAr.add(button)
+                button.isVisible = false
             }
-            actorsSkills.add(tempAr)
+            actorsSkillsBtns.add(tempAr)
         }
     }
 
@@ -98,7 +103,7 @@ class InputHandler (private val field : HexField, val virtualHeight : Float, val
 
   //      val button = TextButton("Click me", skin, "default")
 
-        stageUI.addListener (clickHelper(this))
+        stageUI.addListener (changerUIStageToDefault(this))
 
 //        button.width = 50f
 //        button.height = 50f
@@ -126,6 +131,16 @@ class InputHandler (private val field : HexField, val virtualHeight : Float, val
             for (i in 0..field.actors.size - 1) if (i != actInd) field.actors[i].deactivate()
             if (field.actors[actInd].changeActivation()) {
                 Gdx.input.inputProcessor = stageUI
+                val actIndInField = player.fieldActorIndToPlayerActorInd(actInd)
+                if (actIndInField < 0)  throw Exception("Someting's wrong in adding actors to players.")
+                for (btn in actorsSkillsBtns[actIndInField])
+                    btn.isVisible = true
+            }
+            else {
+                val actIndInField = player.fieldActorIndToPlayerActorInd(actInd)
+                if (actIndInField < 0)  throw Exception("Someting's wrong in adding actors to players.")
+                for (btn in actorsSkillsBtns[actIndInField])
+                    btn.isVisible = false
             }
         }
         else {

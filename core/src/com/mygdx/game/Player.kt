@@ -12,12 +12,13 @@ public class Player(val playerInd : Int, field : HexField, virtualHeight : Float
     //NO actionPoints!!! They belong to actors!
     var inHandler : InputHandler by Delegates.notNull<InputHandler>()
     var actorIndices = arrayListOf<Int>()
+    var actorsNum = 0
     init {
         if (!isAI) inHandler = InputHandler(field, virtualHeight, virtualWidth, this)
     }
 
-    public fun fieldActorIndToPlayerActorInd(ind : Int) : Int?{
-        return actorIndices.find { i -> actorIndices[i] == ind}
+    public fun fieldActorIndToPlayerActorInd(ind : Int) : Int {
+        return actorIndices.binarySearch(ind, 0)
     }
 
     public fun grabInput() {
@@ -27,6 +28,7 @@ public class Player(val playerInd : Int, field : HexField, virtualHeight : Float
     public fun addActorInd(actorInd : Int) {
         actorIndices.add(actorInd)
         inHandler.watchForNewActors()
+        actorsNum++
     }
 
     public fun getInput() : Boolean {

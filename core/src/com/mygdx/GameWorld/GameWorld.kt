@@ -34,10 +34,12 @@ class GameWorld(public val batch : PolygonSpriteBatch, public val field : HexFie
       stage.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true);
 
 
-      val myActor = Archer(field.field[5][5], 1)
-      val myActor2 = DemonFighter(field.field[0][0], 0)
-      addActor(myActor)
-      addActor(myActor2)
+      val archer = Archer(field.field[5][5], 1)
+      val demon = DemonFighter(field.field[0][0], 0)
+      val demon2 = DemonFighter(field.field[3][3], 1)
+      addActor(archer)
+      addActor(demon)
+      addActor(demon2)
 
       Gdx.input.inputProcessor = players[0].inHandler
     }
