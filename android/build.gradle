@@ -1,6 +1,6 @@
 android {
     buildToolsVersion "23.0.1"
-    compileSdkVersion 19
+    compileSdkVersion 23
 
     defaultConfig {
         applicationId "com.mygdx.game"
