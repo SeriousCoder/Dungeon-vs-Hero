@@ -53,7 +53,7 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
         val tempAr = arrayListOf<ImageTextButton>()
 
         for (j in 0..field.actors[newActorInd].skills.size - 1) {
-            val skillName = field.actors[newActorInd].skills[j]
+            val skillName = field.actors[newActorInd].skills[j].first
             val skillPicsPair = field.actors[newActorInd].skillPics[skillName]
                     ?: throw  Exception("Something's wrong with skill names/skill pics names")
 
@@ -70,13 +70,16 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
             button.addListener(object : ClickListener() {
 
                 override fun clicked(event : InputEvent, x : Float, y : Float) {
-                    val iInd = field.actors[newActorInd].hex.i
-                    val jInd = field.actors[newActorInd].hex.j
+                    val skillCost = field.actors[newActorInd].skills[j].second
+                    if (skillCost < field.actors[newActorInd].curActionPoints) {
+                        val iInd = field.actors[newActorInd].hex.i
+                        val jInd = field.actors[newActorInd].hex.j
 
-                    curSkill = SkillBeingUsedData(skillName, player.fieldActorIndToPlayerActorInd(newActorInd), iInd, jInd)
+                        curSkill = SkillBeingUsedData(skillName, player.fieldActorIndToPlayerActorInd(newActorInd), iInd, jInd)
 
-                    val a : ClickListener = this
-                    Gdx.input.inputProcessor = getThisInputHandler()
+                        Gdx.input.inputProcessor = getThisInputHandler()
+
+                    }
                 }
             })
 
@@ -131,11 +134,15 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
                 curSkillVal.iSnd = field.actors[actInd].hex.i
                 curSkillVal.jSnd = field.actors[actInd].hex.j
                 if (skillExec.useSkill(curSkillVal)) {
+                    field.deadActorsExist = true
+
+                    field.actors[curSkillVal.playerActorInd].skillHaveBeenUsed(curSkillVal.skillName)
                     curSkill = null
                     deactivateActorsExcept(-1)
                     for (btn in actorsSkillsBtns[curSkillVal.playerActorInd])
                         btn.isVisible = false
                     dataHasBeenGot = true
+                    return true
                 }
             }
 
@@ -153,25 +160,29 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
         }
         else {
             actInd = field.activatedActorInVicinityInd(iInd, jInd, player.playerInd)
-            if (actInd == null) {
+            if (!field.field[iInd][jInd].occupied) {
+                if (actInd != null) {
+                    field.moveActor(actInd, field.field[iInd][jInd])
+                    dataHasBeenGot = true
+                }
+            }
+            else {
                 val curSkillVal = curSkill
                 var actEnemyInd = field.findActorInd(iInd, jInd)
                 if (curSkillVal != null && actEnemyInd != null) {
-                        curSkillVal.iSnd = field.actors[actEnemyInd].hex.i
-                        curSkillVal.jSnd = field.actors[actEnemyInd].hex.j
-                        if (skillExec.useSkill(curSkillVal)) {
-                            curSkill = null
-                            for (btn in actorsSkillsBtns[curSkillVal.playerActorInd])
-                                btn.isVisible = false
-                            dataHasBeenGot = true
-                        }
+                    curSkillVal.iSnd = field.actors[actEnemyInd].hex.i
+                    curSkillVal.jSnd = field.actors[actEnemyInd].hex.j
+                    if (skillExec.useSkill(curSkillVal)) {
+                        field.deadActorsExist = true
+                        field.actors[curSkillVal.playerActorInd].skillHaveBeenUsed(curSkillVal.skillName)
+                        curSkill = null
+                        for (btn in actorsSkillsBtns[curSkillVal.playerActorInd])
+                            btn.isVisible = false
+                        dataHasBeenGot = true
+                    }
                 }
                 for (i in 0..field.actors.size - 1) if (i != actInd) field.actors[i].deactivate()
                 return true
-            }
-            if (!field.field[iInd][jInd].occupied) {
-                field.moveActor(actInd, field.field[iInd][jInd])
-                dataHasBeenGot = true
             }
         }
         return true // Return true to say we handled the touch.

@@ -52,7 +52,22 @@ class GameWorld(public val batch : PolygonSpriteBatch, public val field : HexFie
         stage.addActor(actor)
     }
 
+    public fun removeDeadActors() {
+        for (curActor in field.actors) {
+            if (curActor.curHealthPoints <= 0) {
+                curActor.hex.occupied = false
+
+                val actorFieldInd = field.findActorIndInField(curActor) ?: throw Exception("Error in adding actors to player")
+                players[curActor.owner].delActorInd(actorFieldInd)
+                curActor.remove()
+                field.actors.remove(curActor)
+            }
+        }
+        field.deadActorsExist = false
+    }
+
     fun update() {
+        if (field.deadActorsExist) removeDeadActors()
         stage.draw()
         if (Gdx.input.inputProcessor is Stage) {
             val curStage = Gdx.input.inputProcessor as Stage

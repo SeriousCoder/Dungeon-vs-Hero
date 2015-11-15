@@ -8,6 +8,7 @@ public class HexForLogic(val x : Float, val y : Float, val R: Float, val i : Int
     public val yl = (y - r).toFloat()//R * Math.sqrt(3.0) / 2
 
     public var occupied = false
+    public var isActorHereDead = false
 
     public var activated = false
     public fun changeActivation() {
@@ -45,6 +46,7 @@ public class HexField() {
     ).toList()
 
     public  val actors = arrayListOf<ActorHex>()//shouldn't be public; temporary workaround
+    public var deadActorsExist = false
     public fun addActor(actor : ActorHex) : Int{
         actors.add(actor)
         return actors.lastIndex
@@ -69,6 +71,17 @@ public class HexField() {
             for (k in 0..actors.size - 1) {
                 val cur = actors[k]
                 if (cur.hex.i == i && cur.hex.j == j && cur.owner == owner)
+                    return k
+            }
+        }
+        return null
+    }
+
+    public fun findActorIndNotOwner(i : Int, j : Int, notOwner : Int) : Int?{
+        if (field[i][j].occupied) {
+            for (k in 0..actors.size - 1) {
+                val cur = actors[k]
+                if (cur.hex.i == i && cur.hex.j == j && cur.owner != notOwner)
                     return k
             }
         }
@@ -129,5 +142,11 @@ public class HexField() {
         actors[actInd].actorX = hex.xl + 6
         actors[actInd].actorY = hex.yl + 4
         actors[actInd].activated = false
+    }
+
+    public fun findActorIndInField(actor : ActorHex) : Int? {
+        for (i in 0..actors.size -1)
+            if (actors[i] == actor) return i
+        return null
     }
 }

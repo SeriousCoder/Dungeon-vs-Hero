@@ -16,7 +16,7 @@ class DemonFighter (hex : HexForLogic, owner : Int) : ActorHex(hex, owner) {
 
     public var waiting = false
     init {
-        skills = arrayListOf("Stab", "Jump")
+        skills = arrayListOf(Pair("Stab", 1), Pair("Jump", 1))
         skillPics.put("Stab", Pair("Stab_demon", "Stab_demon_pressed"))
         skillPics.put("Jump", Pair("Jump_demon", "Jump_demon_pressed"))
         setBounds(actorX, actorY, texture.width.toFloat(), texture.height.toFloat())

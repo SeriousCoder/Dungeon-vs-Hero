@@ -15,7 +15,7 @@ public class Archer(hex : HexForLogic, owner : Int) : ActorHex(hex, owner) {
 
     public var waiting = false
     init {
-        skills = arrayListOf("Quick shot", "Jump")
+        skills = arrayListOf(Pair("Quick shot", 1), Pair("Jump", 1))
         skillPics.put("Quick shot", Pair("Quick_shot", "Quick_shot_pressed"))
         skillPics.put("Jump", Pair("Jump_archer", "Jump_archer_pressed"))
         setBounds(actorX, actorY, texture.width.toFloat(), texture.height.toFloat())

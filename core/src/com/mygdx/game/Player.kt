@@ -32,6 +32,12 @@ public class Player(val playerInd : Int, field : HexField, val skillExec: SkillE
         actorsNum++
     }
 
+    public fun delActorInd(actorInd : Int) {
+        actorIndices.remove(actorInd)
+    //    inHandler.removeActorSkills()
+        actorsNum--
+    }
+
     public fun getInput() : Boolean {
         if (inHandler.dataHasBeenGot) {
             inHandler.dataHasBeenGot = false
