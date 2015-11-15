@@ -53,12 +53,18 @@ class GameWorld(public val batch : PolygonSpriteBatch, public val field : HexFie
     }
 
     public fun removeDeadActors() {
-        for (curActor in field.actors) {
+        for (i in 0..field.actors.size - 1) {
+            val curActor : ActorHex
+            try {
+                curActor = field.actors[i]
+            }
+            catch (exc : Exception) {
+                break
+            }
             if (curActor.curHealthPoints <= 0) {
                 curActor.hex.occupied = false
 
-                val actorFieldInd = field.findActorIndInField(curActor) ?: throw Exception("Error in adding actors to player")
-                players[curActor.owner].delActorInd(actorFieldInd)
+                players[curActor.owner].delActorInd(i)
                 curActor.remove()
                 field.actors.remove(curActor)
             }
