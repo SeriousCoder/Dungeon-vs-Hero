@@ -19,7 +19,7 @@ public class Player(val playerInd : Int, field : HexField, val skillExec: SkillE
     }
 
     public fun fieldActorIndToPlayerActorInd(ind : Int) : Int {
-        return actorIndices.binarySearch(ind, 0)
+        return actorIndices.binarySearch(ind, 0, actorsNum)
     }
 
     public fun grabInput() {
@@ -33,9 +33,17 @@ public class Player(val playerInd : Int, field : HexField, val skillExec: SkillE
     }
 
     public fun delActorInd(actorInd : Int) {
+        inHandler.actorsSkillsBtns.removeAt(fieldActorIndToPlayerActorInd(actorInd))
         actorIndices.remove(actorInd)
     //    inHandler.removeActorSkills()
         actorsNum--
+        correctActorFieldIndicesAfterDeletion(actorInd)
+    }
+
+    public fun correctActorFieldIndicesAfterDeletion(actorInd: Int) {
+        for (i in actorIndices.indices) {
+            if (actorIndices[i] > actorInd) actorIndices[i]--
+        }
     }
 
     public fun getInput() : Boolean {

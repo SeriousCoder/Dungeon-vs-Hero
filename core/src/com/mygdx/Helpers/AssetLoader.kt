@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.mygdx.game.GameWorld.GameWorld
 import kotlin.properties.Delegates
 
-public class AssetLoader()
+object AssetLoader
 {
     public var backgroungs : Texture by Delegates.notNull<Texture>()
     public var buttons : Texture by Delegates.notNull<Texture>()
@@ -22,7 +22,7 @@ public class AssetLoader()
     public var gameWorld : GameWorld by Delegates.notNull<GameWorld>()
 
 
-    public fun load()
+    init
     {
         backgroungs = Texture(Gdx.files.internal("Data/Images/main2.jpg"))
         units = Texture(Gdx.files.internal("Data/Images/archer.png"))

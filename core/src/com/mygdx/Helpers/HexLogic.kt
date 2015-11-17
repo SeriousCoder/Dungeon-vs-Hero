@@ -149,4 +149,8 @@ public class HexField() {
             if (actors[i] == actor) return i
         return null
     }
+
+    fun deactivateActorsExcept(doNotDeactivateInd : Int) {
+        for (i in 0..actors.size - 1) if (i != doNotDeactivateInd) actors[i].deactivate()
+    }
 }

@@ -18,19 +18,22 @@ import com.mygdx.game.Helpers.HexField
 import com.mygdx.game.Player
 import kotlin.properties.Delegates
 
-class GameWorld(public val batch : PolygonSpriteBatch, public val field : HexField) {
-
+object GameWorld {
+    public var batch : PolygonSpriteBatch by Delegates.notNull<PolygonSpriteBatch>()
+    public val field = HexField()
     val virtualWidth  = 360f
     val virtualHeight = 640f
     //because of line below, it'll work correctly only on 16:9 resolutions.
    // val resolutionMultiplier = Gdx.graphics.width / virtualWidth
-    private var stage: Stage by Delegates.notNull<Stage>()
+    public var stage: Stage by Delegates.notNull<Stage>()
 
     val players = listOf(Player(0, field, SkillExecutor(this, 0), virtualHeight, virtualWidth),
             Player(1, field, SkillExecutor(this, 1), virtualHeight, virtualWidth))
   //  val player0 = Player(0, InputHandler(field, virtualHeight.toInt(), resolutionMultiplier))
   //  val player1 = Player(1, InputHandler(field, virtualHeight.toInt(), resolutionMultiplier))
     init {
+      batch = PolygonSpriteBatch()
+
       stage = Stage(FitViewport(virtualWidth, virtualHeight), batch)
       stage.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true);
 
@@ -65,6 +68,7 @@ class GameWorld(public val batch : PolygonSpriteBatch, public val field : HexFie
                 curActor.hex.occupied = false
 
                 players[curActor.owner].delActorInd(i)
+                players[1 - curActor.owner].correctActorFieldIndicesAfterDeletion(i)
                 curActor.remove()
                 field.actors.remove(curActor)
             }
@@ -74,16 +78,10 @@ class GameWorld(public val batch : PolygonSpriteBatch, public val field : HexFie
 
     fun update() {
         if (field.deadActorsExist) removeDeadActors()
-        stage.draw()
-        if (Gdx.input.inputProcessor is Stage) {
-            val curStage = Gdx.input.inputProcessor as Stage
-            curStage.draw()
-            curStage.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true);
-        }
-        stage.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true);
     }
 
     fun dispose() {
         stage.dispose()
+        batch.dispose()
     }
 }

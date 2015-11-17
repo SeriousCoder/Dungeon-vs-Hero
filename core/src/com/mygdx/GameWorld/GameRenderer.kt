@@ -9,25 +9,38 @@ import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
+import com.badlogic.gdx.scenes.scene2d.Stage
 import com.mygdx.game.Helpers.HexField
 import com.mygdx.game.Helpers.HexPolygonActivated
 import com.mygdx.game.Helpers.HexPolygonDefault
 import kotlin.properties.Delegates
 
-class GameRenderer(private val gameWorld : GameWorld) {
+object  GameRenderer {
 
 	private var polygon : PolygonSpriteBatch by Delegates.notNull<PolygonSpriteBatch>()
 	private var field : HexField by Delegates.notNull<HexField>()
 	private var hex : PolygonRegion by Delegates.notNull<PolygonRegion>()
     private var hexActive : PolygonRegion by Delegates.notNull<PolygonRegion>()
     private var curPlayer = 0
+    private var drawUI = false
+    private var stageUI : Stage? = null
 
     init {
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1f)
-        polygon = gameWorld.batch
-        field   = gameWorld.field
+        polygon = GameWorld.batch
+        field   = GameWorld.field
         hex     = HexPolygonDefault(field.hexR.toFloat()).hexRegion
         hexActive = HexPolygonActivated(field.hexR.toFloat()).hexRegion
+    }
+
+    public fun enableDrawingUI(UIStage : Stage) {
+        drawUI = true
+        stageUI = UIStage
+    }
+
+    public fun disableDrawingUI() {
+        drawUI = false
+        stageUI = null
     }
 
     fun render() {
@@ -47,12 +60,20 @@ class GameRenderer(private val gameWorld : GameWorld) {
         }
         polygon.end()
 
-        if (gameWorld.players[curPlayer].getInput()) {
+        if (GameWorld.players[curPlayer].getInput()) {
             curPlayer = 1 - curPlayer
-            gameWorld.players[curPlayer].grabInput()
+            GameWorld.players[curPlayer].grabInput()
         }
 
-        gameWorld.update()
+        GameWorld.update()
+        GameWorld.stage.draw()
+        GameWorld.stage.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true);
+
+        if (drawUI) {
+            val uiStageVal = stageUI ?: throw Exception("Error in ui stage in GameRenderer")
+            uiStageVal.draw()
+            uiStageVal.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true);
+        }
     }
 
     fun dispose() {

@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport
 import com.mygdx.GameObjects.ActorHex
 import com.mygdx.Helpers.AssetLoader
 import com.mygdx.Helpers.SkillExecutor
+import com.mygdx.game.GameWorld.GameRenderer
 import com.mygdx.game.Player
 import java.util.*
 import kotlin.properties.Delegates
@@ -25,7 +26,6 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
     var dataHasBeenGot = false
     private var stageUI: Stage by Delegates.notNull<Stage>()
     val actorsSkillsBtns = arrayListOf<ArrayList<ImageTextButton>>()
-    val asset = AssetLoader()
     private var curSkill : SkillBeingUsedData? = null
   //  val actorsSkills : ArrayList<ArrayList<ImageTextButton>> by Delegates.notNull<ArrayList<ArrayList<ImageTextButton>>>()
     //list of lists of button for skills of actors. One outer list - one actor. One inner list - buttons of his skills.
@@ -35,7 +35,8 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
 
     class SkillBeingUsedData(
         val skillName : String,
-        val playerActorInd : Int,
+    //    val playerActorInd : Int,
+        val actor : ActorHex,
         val iFst: Int,
         val jFst: Int
     ) {
@@ -43,11 +44,33 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
         var jSnd: Int? = null
     }
 
+    public fun correctBtnIndicesAfterDeletion(actInd : Int) {
+        for (i in actInd..actorsSkillsBtns.size - 1) {
+            for (btn in actorsSkillsBtns[i]) {
+
+            }
+        }
+    }
+
+    private inner class btnListener(val curActor: ActorHex, val skillName: String,
+                                    val skillInd : Int) : ClickListener() {
+        override fun clicked(event : InputEvent, x : Float, y : Float) {
+            val skillCost = curActor.skills[skillInd].second
+            if (skillCost < curActor.curActionPoints) {
+                val iInd = curActor.hex.i
+                val jInd = curActor.hex.j
+
+                curSkill = SkillBeingUsedData(skillName, curActor, iInd, jInd)
+
+                Gdx.input.inputProcessor = getThisInputHandler()
+            }
+        }
+    }
 
     public fun addNewActorSkills() {
         val buttonsAtlas = TextureAtlas("Data/UI/SkillButtons.pack"); //** button atlas image **//
         val buttonSkin = Skin(buttonsAtlas)
-        val font = asset.generateFont("Doux Medium.ttf", 15, Color.RED)
+        val font = AssetLoader.generateFont("Doux Medium.ttf", 15, Color.RED)
 
         val newActorInd = player.actorIndices[player.actorsNum]
         val tempAr = arrayListOf<ImageTextButton>()
@@ -68,6 +91,7 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
             button.height = 70f
             button.setPosition((j * 80).toFloat(), 0f)
 
+            //button.addListener(btnListener(curActor, skillName, j))
             button.addListener(object : ClickListener() {
                 override fun clicked(event : InputEvent, x : Float, y : Float) {
                     val skillCost = curActor.skills[j].second
@@ -75,13 +99,12 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
                         val iInd = curActor.hex.i
                         val jInd = curActor.hex.j
 
-                        curSkill = SkillBeingUsedData(skillName, player.fieldActorIndToPlayerActorInd(newActorInd), iInd, jInd)
+                        curSkill = SkillBeingUsedData(skillName, curActor, iInd, jInd)
 
                         Gdx.input.inputProcessor = getThisInputHandler()
                     }
                 }
             })
-
             button.isVisible = false
 
             stageUI.addActor(button)
@@ -111,8 +134,10 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
         })
     }
 
-    fun deactivateActorsExcept(doNotDeactivateInd : Int) {
-        for (i in 0..field.actors.size - 1) if (i != doNotDeactivateInd) field.actors[i].deactivate()
+    fun hideButtons() {
+        for (btnArray in actorsSkillsBtns)
+            for (btn in btnArray)
+                btn.isVisible = false
     }
 
     private fun tryToUseSkill(curActor : ActorHex) : Boolean {
@@ -123,11 +148,10 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
             if (skillExec.useSkill(curSkillVal)) {
                 field.deadActorsExist = true
 
-                field.actors[curSkillVal.playerActorInd].skillHaveBeenUsed(curSkillVal.skillName)
+                curSkillVal.actor.skillHaveBeenUsed(curSkillVal.skillName)
                 curSkill = null
-                deactivateActorsExcept(-1)
-                for (btn in actorsSkillsBtns[curSkillVal.playerActorInd])
-                    btn.isVisible = false
+                field.deactivateActorsExcept(-1)
+                hideButtons()
                 dataHasBeenGot = true
                 return true
             }
@@ -154,13 +178,16 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
 
             if (tryToUseSkill(curActor)) return true
 
-            deactivateActorsExcept(actInd)
+            field.deactivateActorsExcept(actInd)
             if (curActor.changeActivation()) {
                 Gdx.input.inputProcessor = stageUI
+                hideButtons()
                 for (btn in actorsSkillsBtns[actIndInPlayer])
                     btn.isVisible = true
+                GameRenderer.enableDrawingUI(stageUI)
             }
             else {
+                GameRenderer.disableDrawingUI()
                 for (btn in actorsSkillsBtns[actIndInPlayer])
                     btn.isVisible = false
             }
@@ -170,6 +197,7 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
             if (!field.field[iInd][jInd].occupied) {
                 if (actInd != null) {
                     field.moveActor(actInd, field.field[iInd][jInd])
+                    hideButtons()
                     dataHasBeenGot = true
                 }
             }
@@ -178,7 +206,7 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
                 if (actEnemyInd != null) {
                     tryToUseSkill(field.actors[actEnemyInd])
                 }
-                deactivateActorsExcept(-1)//dubious
+                field.deactivateActorsExcept(-1)//dubious
             }
         }
         return true // Return true to say we handled the touch.
