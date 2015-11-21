@@ -20,8 +20,8 @@ public abstract class HexForPolygon(private val r : Float) {
             xcenter - r / 2f, (ycenter - r * Math.sqrt(3.0) / 2).toFloat()
     )
 }
-public class HexPolygonDefault (private val r : Float) : HexForPolygon(r), Disposable {
-    private val texture   = Texture("Data/Images/tile.png")
+open public class HexPolygonDefault (private val r : Float) : HexForPolygon(r), Disposable {
+    open protected val texture   = Texture("Data/Images/tile.png")
     private val triangles = EarClippingTriangulator().computeTriangles(vertices).toArray()
     private val tr        = TextureRegion(texture)
 
@@ -31,14 +31,24 @@ public class HexPolygonDefault (private val r : Float) : HexForPolygon(r), Dispo
         texture.dispose()
     }
 }
-public class HexPolygonActivated (private val r : Float) : HexForPolygon(r), Disposable {
-    private val texture   = Texture("Data/Images/red.png")
-    private val triangles = EarClippingTriangulator().computeTriangles(vertices).toArray()
-    private val tr        = TextureRegion(texture)
+//public class HexPolygonActivated (private val r : Float) : HexForPolygon(r), Disposable {
+//    private val texture   = Texture("Data/Images/red.png")
+//    private val triangles = EarClippingTriangulator().computeTriangles(vertices).toArray()
+//    private val tr        = TextureRegion(texture)
+//
+//    public  val hexRegion = PolygonRegion(tr, vertices, triangles)
+//
+//    override public fun dispose() {
+//        texture.dispose()
+//    }
+//}
 
-    public  val hexRegion = PolygonRegion(tr, vertices, triangles)
-
-    override public fun dispose() {
-        texture.dispose()
-    }
+public class HexPolygonActivatedP1 (r : Float) : HexPolygonDefault(r), Disposable {
+    override protected val texture = Texture("Data/Images/red.png")
 }
+
+public class HexPolygonActivatedP2 (r : Float) : HexPolygonDefault(r), Disposable {
+    override protected val texture = Texture("Data/Images/red.png")
+}
+
+public class HexPolygonActivatedOtherColor ()

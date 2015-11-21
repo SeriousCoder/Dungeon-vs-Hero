@@ -44,29 +44,6 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
         var jSnd: Int? = null
     }
 
-    public fun correctBtnIndicesAfterDeletion(actInd : Int) {
-        for (i in actInd..actorsSkillsBtns.size - 1) {
-            for (btn in actorsSkillsBtns[i]) {
-
-            }
-        }
-    }
-
-    private inner class btnListener(val curActor: ActorHex, val skillName: String,
-                                    val skillInd : Int) : ClickListener() {
-        override fun clicked(event : InputEvent, x : Float, y : Float) {
-            val skillCost = curActor.skills[skillInd].second
-            if (skillCost < curActor.curActionPoints) {
-                val iInd = curActor.hex.i
-                val jInd = curActor.hex.j
-
-                curSkill = SkillBeingUsedData(skillName, curActor, iInd, jInd)
-
-                Gdx.input.inputProcessor = getThisInputHandler()
-            }
-        }
-    }
-
     public fun addNewActorSkills() {
         val buttonsAtlas = TextureAtlas("Data/UI/SkillButtons.pack"); //** button atlas image **//
         val buttonSkin = Skin(buttonsAtlas)
@@ -95,7 +72,7 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
             button.addListener(object : ClickListener() {
                 override fun clicked(event : InputEvent, x : Float, y : Float) {
                     val skillCost = curActor.skills[j].second
-                    if (skillCost < curActor.curActionPoints) {
+                    if (skillCost <= curActor.curActionPoints) {
                         val iInd = curActor.hex.i
                         val jInd = curActor.hex.j
 
@@ -152,11 +129,19 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
                 curSkill = null
                 field.deactivateActorsExcept(-1)
                 hideButtons()
-                dataHasBeenGot = true
+                endTurn()
                 return true
             }
         }
         return false
+    }
+
+    private fun endTurn() {
+        dataHasBeenGot = true
+        for (i in player.actorIndices) {
+            val actor = field.actors[i]
+            actor.curActionPoints = actor.maxActionPoints
+        }
     }
 
     override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int) : Boolean {
@@ -198,7 +183,7 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
                 if (actInd != null) {
                     field.moveActor(actInd, field.field[iInd][jInd])
                     hideButtons()
-                    dataHasBeenGot = true
+                    endTurn()
                 }
             }
             else {
