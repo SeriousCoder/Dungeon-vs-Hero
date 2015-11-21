@@ -1,6 +1,7 @@
 package com.mygdx.game.Helpers
 
 import com.mygdx.GameObjects.ActorHex
+import java.util.*
 
 public class HexForLogic(val x : Float, val y : Float, val R: Float, val i : Int, val j : Int) {
     public val r  = R * Math.sqrt(3.0) / 2
@@ -9,6 +10,8 @@ public class HexForLogic(val x : Float, val y : Float, val R: Float, val i : Int
 
     public var occupied = false
     public var isActorHereDead = false
+
+    public var lit = false
 
     public var activated = false
     public fun changeActivation() {
@@ -132,6 +135,60 @@ public class HexField() {
             if (actInd != null && actors[actInd].activated) return actInd
         }
         return null
+    }
+
+    public fun hexesInVicinityRadius(i : Int, j : Int, r : Int = 1) : ArrayList<Pair<Int, Int>>?{
+        if (r < 0)  return null
+        if (r == 0) return arrayListOf(Pair(i, j))
+
+        val res = HashSet<Pair<Int, Int>>()
+        var curR = r
+
+        var neighbours = hexesInVicinity(i, j)
+        res.addAll(neighbours)
+        curR--
+        while (curR > 0) {
+            val temp = arrayListOf<Pair<Int, Int>>()
+            for (hex in neighbours) {
+                for (k in hexesInVicinity(hex.first, hex.second)) {
+                    temp.add(k)
+                }
+            }
+            neighbours = temp
+            res.addAll(temp)
+            curR--
+        }
+        return res.toArrayList()
+    }
+
+    private fun hexesInVicinity(i : Int, j : Int) : ArrayList<Pair<Int, Int>> {
+        val res = arrayListOf<Pair<Int, Int>>()
+        if (i % 2 == 0) {
+            //columns 0, 2, ...
+            if (i - 1 >= 0) {
+                if (j - 1 >= 0) res.add(Pair(i - 1, j - 1))
+                res.add(Pair(i - 1, j))//j always >= 0
+            }
+            if (i + 1 < width) {
+                if (j - 1 >= 0) res.add(Pair(i + 1, j - 1))
+                res.add(Pair(i + 1, j))//j always >= 0
+            }
+            if (j - 1 >= 0) res.add(Pair(i, j - 1))
+            if (j + 1 < height) res.add(Pair(i, j + 1))
+        }
+        else {
+            if (i - 1 >= 0) {
+                if (j + 1 < height) res.add(Pair(i - 1, j + 1))
+                res.add(Pair(i - 1, j))//j always >= 0
+            }
+            if (i + 1 < width) {
+                if (j + 1 < height) res.add(Pair(i + 1, j + 1))
+                res.add(Pair(i + 1, j))//j always >= 0
+            }
+            if (j - 1 >= 0) res.add(Pair(i, j - 1))
+            if (j + 1 < height) res.add(Pair(i, j + 1))
+        }
+        return res
     }
 
     public fun moveActor(actInd : Int, hex : HexForLogic) {

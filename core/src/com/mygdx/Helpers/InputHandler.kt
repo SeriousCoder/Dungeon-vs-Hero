@@ -77,7 +77,7 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
                         val jInd = curActor.hex.j
 
                         curSkill = SkillBeingUsedData(skillName, curActor, iInd, jInd)
-
+                        skillExec.changeHexLightForSkill(skillName, iInd, jInd)
                         Gdx.input.inputProcessor = getThisInputHandler()
                     }
                 }
@@ -120,6 +120,7 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
     private fun tryToUseSkill(curActor : ActorHex) : Boolean {
         val curSkillVal = curSkill
         if (curSkillVal != null) {
+            skillExec.changeHexLightForSkill(curSkillVal.skillName, curSkillVal.iFst, curSkillVal.jFst)
             curSkillVal.iSnd = curActor.hex.i
             curSkillVal.jSnd = curActor.hex.j
             if (skillExec.useSkill(curSkillVal)) {

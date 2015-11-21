@@ -10,9 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.mygdx.game.Helpers.HexField
-import com.mygdx.game.Helpers.HexPolygonActivated
-import com.mygdx.game.Helpers.HexPolygonDefault
+import com.mygdx.game.Helpers.*
 import kotlin.properties.Delegates
 
 object  GameRenderer {
@@ -20,7 +18,9 @@ object  GameRenderer {
 	private var polygon : PolygonSpriteBatch by Delegates.notNull<PolygonSpriteBatch>()
 	private var field : HexField by Delegates.notNull<HexField>()
 	private var hex : PolygonRegion by Delegates.notNull<PolygonRegion>()
-    private var hexActive : PolygonRegion by Delegates.notNull<PolygonRegion>()
+    private var hexLit : PolygonRegion by Delegates.notNull<PolygonRegion>()
+    private var hexActiveP1 : PolygonRegion by Delegates.notNull<PolygonRegion>()
+    private var hexActiveP0 : PolygonRegion by Delegates.notNull<PolygonRegion>()
     private var curPlayer = 0
     private var drawUI = false
     private var stageUI : Stage? = null
@@ -29,8 +29,11 @@ object  GameRenderer {
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1f)
         polygon = GameWorld.batch
         field   = GameWorld.field
-        hex     = HexPolygonDefault(field.hexR.toFloat()).hexRegion
-        hexActive = HexPolygonActivated(field.hexR.toFloat()).hexRegion
+        val r = field.hexR.toFloat()
+        hex  = HexPolygon(r, null).hexRegion
+        hexLit = HexPolygon(r, "lit").hexRegion
+        hexActiveP0 = HexPolygon(r, "p0").hexRegion
+        hexActiveP1 = HexPolygon(r, "p1").hexRegion
     }
 
     public fun enableDrawingUI(UIStage : Stage) {
@@ -52,8 +55,11 @@ object  GameRenderer {
                 val cur = field.field[i][j]
                 var curText = hex
                 if (cur.activated) {
-                    curText = hexActive
+                    val actInd = field.findActorInd(cur.i, cur.j) ?: throw Exception("An actor doesn't belong to any player")
+                    if (field.actors[actInd].owner == 0) curText = hexActiveP0
+                    else curText = hexActiveP1
                 }
+                if (cur.lit) curText = hexLit
                 polygon.draw(curText, cur.xl.toFloat() + (-47f + 20 * Math.sqrt(3.0) / 2).toFloat(),
                         cur.yl.toFloat() + (-50f + 20 * Math.sqrt(3.0) / 2).toFloat())
             }

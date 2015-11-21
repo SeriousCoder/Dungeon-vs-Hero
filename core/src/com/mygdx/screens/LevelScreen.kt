@@ -13,19 +13,19 @@ import kotlin.properties.Delegates
 public class LevelScreen(val asset: AssetLoader, game : DvHGame) : Screen
 {
 
-    private var renderer : GameRenderer by Delegates.notNull<GameRenderer>()
+   // private var renderer : GameRenderer by Delegates.notNull<GameRenderer>()
 
     init {
         asset.gameWorld = GameWorld
-        renderer = GameRenderer
+       // renderer = GameRenderer
     }
 
     override fun render(delta: Float) {
-        renderer.render()
+        GameRenderer.render()
     }
 
     override fun dispose() {
-        renderer.dispose()
+        GameRenderer.dispose()
 
         asset.gameWorld.dispose()
     }
