@@ -44,6 +44,13 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
         var jSnd: Int? = null
     }
 
+    private fun delCurSkill() {
+        val curSkillVal = curSkill
+        if (curSkillVal != null)
+            skillExec.changeHexLightForSkill(curSkillVal.skillName, curSkillVal.iFst, curSkillVal.jFst)
+        curSkill = null
+    }
+
     public fun addNewActorSkills() {
         val buttonsAtlas = TextureAtlas("Data/UI/SkillButtons.pack"); //** button atlas image **//
         val buttonSkin = Skin(buttonsAtlas)
@@ -120,14 +127,34 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
     private fun tryToUseSkill(curActor : ActorHex) : Boolean {
         val curSkillVal = curSkill
         if (curSkillVal != null) {
-            skillExec.changeHexLightForSkill(curSkillVal.skillName, curSkillVal.iFst, curSkillVal.jFst)
+
             curSkillVal.iSnd = curActor.hex.i
             curSkillVal.jSnd = curActor.hex.j
             if (skillExec.useSkill(curSkillVal)) {
                 field.deadActorsExist = true
 
                 curSkillVal.actor.skillHaveBeenUsed(curSkillVal.skillName)
-                curSkill = null
+                delCurSkill()
+                field.deactivateActorsExcept(-1)
+                hideButtons()
+                endTurn()
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun tryToUseSkill(iSnd : Int, jSnd : Int) : Boolean {
+        val curSkillVal = curSkill
+        if (curSkillVal != null) {
+
+            curSkillVal.iSnd = iSnd
+            curSkillVal.jSnd = jSnd
+            if (skillExec.useSkill(curSkillVal)) {
+                field.deadActorsExist = true
+
+                curSkillVal.actor.skillHaveBeenUsed(curSkillVal.skillName)
+                delCurSkill()
                 field.deactivateActorsExcept(-1)
                 hideButtons()
                 endTurn()
@@ -162,6 +189,10 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
 
             val curActor = field.actors[actInd]
 
+//            val curSkillVal = curSkill
+//            if (curSkillVal != null) {
+                if (curSkill?.actor != curActor) delCurSkill()
+           // }
             if (tryToUseSkill(curActor)) return true
 
             field.deactivateActorsExcept(actInd)
@@ -174,6 +205,7 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
             }
             else {
                 GameRenderer.disableDrawingUI()
+                delCurSkill()
                 for (btn in actorsSkillsBtns[actIndInPlayer])
                     btn.isVisible = false
             }
@@ -183,8 +215,16 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
             if (!field.field[iInd][jInd].occupied) {
                 if (actInd != null) {
                     field.moveActor(actInd, field.field[iInd][jInd])
+                    delCurSkill()
                     hideButtons()
                     endTurn()
+                }
+                else {
+                    if (tryToUseSkill(iInd, jInd)) {
+                        delCurSkill()
+                        hideButtons()
+                        endTurn()
+                    }
                 }
             }
             else {

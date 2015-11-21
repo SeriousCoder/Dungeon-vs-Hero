@@ -27,8 +27,8 @@ object GameWorld {
    // val resolutionMultiplier = Gdx.graphics.width / virtualWidth
     public var stage: Stage by Delegates.notNull<Stage>()
 
-    val players = listOf(Player(0, field, SkillExecutor(this, 0), virtualHeight, virtualWidth),
-            Player(1, field, SkillExecutor(this, 1), virtualHeight, virtualWidth))
+    val players = listOf(Player(0, field, SkillExecutor(0), virtualHeight, virtualWidth),
+            Player(1, field, SkillExecutor(1), virtualHeight, virtualWidth))
   //  val player0 = Player(0, InputHandler(field, virtualHeight.toInt(), resolutionMultiplier))
   //  val player1 = Player(1, InputHandler(field, virtualHeight.toInt(), resolutionMultiplier))
     init {
