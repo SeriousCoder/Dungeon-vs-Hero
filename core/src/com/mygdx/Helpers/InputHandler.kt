@@ -7,10 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
-import com.badlogic.gdx.scenes.scene2d.ui.Button
-import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton
+import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.mygdx.GameObjects.ActorHex
@@ -23,23 +20,38 @@ import kotlin.properties.Delegates
 
 class InputHandler (private val field : HexField, private val skillExec : SkillExecutor,
                     private val virtualHeight : Float, private val virtualWidth : Float, private val player: Player) : InputProcessor {
-    var dataHasBeenGot = false
-    private var stageUI: Stage by Delegates.notNull<Stage>()
-    val actorsSkillsBtns = arrayListOf<ArrayList<ImageTextButton>>()
+    private var stageUI  : Stage by Delegates.notNull<Stage>()
     private var curSkill : SkillBeingUsedData? = null
-  //  val actorsSkills : ArrayList<ArrayList<ImageTextButton>> by Delegates.notNull<ArrayList<ArrayList<ImageTextButton>>>()
-    //list of lists of button for skills of actors. One outer list - one actor. One inner list - buttons of his skills.
+
+    val actorsSkillsBtns = arrayListOf<ArrayList<ImageTextButton>>()
+    val actorsActionPoints = arrayListOf<Pair<ActorHex, Label>>()
+    var dataHasBeenGot   = false
+
+    init {
+        stageUI = Stage(FitViewport(virtualWidth, virtualHeight))
+        stageUI.addListener (object : ClickListener() {
+            override fun touchDown(event : InputEvent , x : Float , y: Float, pointer : Int, button : Int) : Boolean{
+                val resolutionMultiplier = Gdx.graphics.width / virtualWidth
+                val screenY = Gdx.graphics.height - resolutionMultiplier * y
+                val screenX = x * resolutionMultiplier
+
+                if (y > 75) {
+                    val inputHandler = getThisInputHandler()
+                    Gdx.input.inputProcessor = inputHandler
+                    return inputHandler.touchDown(screenX.toInt(), screenY.toInt(), 0, 0)
+                }
+                return true
+            }
+        })
+    }
+
     private fun getThisInputHandler() : InputHandler{
         return this
     }
 
-    class SkillBeingUsedData(
-        val skillName : String,
-    //    val playerActorInd : Int,
-        val actor : ActorHex,
-        val iFst: Int,
-        val jFst: Int
-    ) {
+    class SkillBeingUsedData(val skillName : String,
+                             val actor : ActorHex,
+                             val iFst: Int, val jFst: Int) {
         var iSnd: Int? = null
         var jSnd: Int? = null
     }
@@ -60,6 +72,13 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
         val tempAr = arrayListOf<ImageTextButton>()
 
         val curActor = field.actors[newActorInd]
+
+        val labelStyle = Label.LabelStyle(font, Color.WHITE)
+        val actionPoints = Label("AP: " + curActor.maxActionPoints.toString(), labelStyle)
+        stageUI.addActor(actionPoints)
+        actorsActionPoints.add(Pair(curActor, actionPoints))
+   //     actionPoints.isVisible = false
+
         for (j in 0..curActor.skills.size - 1) {
             val skillName = curActor.skills[j].first
             val skillPicsPair = curActor.skillPics[skillName]
@@ -97,25 +116,12 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
         actorsSkillsBtns.add(tempAr)
     }
 
-    init {
-        stageUI = Stage(FitViewport(virtualWidth, virtualHeight))
-        stageUI.addListener (object : ClickListener() {
-            override fun touchDown(event : InputEvent , x : Float , y: Float, pointer : Int, button : Int) : Boolean{
-                val resolutionMultiplier = Gdx.graphics.width / virtualWidth
-                val screenY = Gdx.graphics.height - resolutionMultiplier * y
-                val screenX = x * resolutionMultiplier
-
-                if (y > 75) {
-                    val inputHandler = getThisInputHandler()
-                    Gdx.input.inputProcessor = inputHandler
-//                    for (i in actorsSkillsBtns)
-//                        for (j in i)
-//                            j.isVisible = false
-                    return inputHandler.touchDown(screenX.toInt(), screenY.toInt(), 0, 0)
-                }
-                return true
+    fun updateActionPoints(actor: ActorHex) {
+        for (i in actorsActionPoints)
+            if (i.first == actor) {
+                i.second.setText("AP: " + actor.curActionPoints)
+                break
             }
-        })
     }
 
     fun hideButtons() {
@@ -125,23 +131,7 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
     }
 
     private fun tryToUseSkill(curActor : ActorHex) : Boolean {
-        val curSkillVal = curSkill
-        if (curSkillVal != null) {
-
-            curSkillVal.iSnd = curActor.hex.i
-            curSkillVal.jSnd = curActor.hex.j
-            if (skillExec.useSkill(curSkillVal)) {
-                field.deadActorsExist = true
-
-                curSkillVal.actor.skillHaveBeenUsed(curSkillVal.skillName)
-                delCurSkill()
-                field.deactivateActorsExcept(-1)
-                hideButtons()
-                endTurn()
-                return true
-            }
-        }
-        return false
+        return tryToUseSkill(curActor.hex.i, curActor.hex.j)
     }
 
     private fun tryToUseSkill(iSnd : Int, jSnd : Int) : Boolean {
@@ -154,6 +144,7 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
                 field.deadActorsExist = true
 
                 curSkillVal.actor.skillHaveBeenUsed(curSkillVal.skillName)
+                updateActionPoints(curSkillVal.actor)
                 delCurSkill()
                 field.deactivateActorsExcept(-1)
                 hideButtons()
@@ -191,7 +182,7 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
 
 //            val curSkillVal = curSkill
 //            if (curSkillVal != null) {
-                if (curSkill?.actor != curActor) delCurSkill()
+            if (curSkill?.actor != curActor) delCurSkill()
            // }
             if (tryToUseSkill(curActor)) return true
 

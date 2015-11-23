@@ -22,9 +22,9 @@ public class SkillExecutor(private val executorPlayerInd: Int) {
 
     public fun changeHexLightForSkill(skillName: String, i_executor: Int, j_executor: Int) {
         when (skillName) {
-            "Quick shot" -> quickShot.changeHexLight(i_executor, j_executor)
+            "Quick shot" -> quickShot.changeHexLight(i_executor, j_executor, quickShot.radius)
             "Stab" -> stab.changeHexLight(i_executor, j_executor)
-            "Jump" -> jump.changeHexLight(i_executor, j_executor)
+            "Jump" -> jump.changeHexLight(i_executor, j_executor, jump.radius)
         }
     }
 
@@ -34,7 +34,19 @@ public class SkillExecutor(private val executorPlayerInd: Int) {
                 skillData.iSnd ?: throw Exception(), skillData.jSnd ?: throw Exception())
     }
 
-    inner class Jump() {
+    open inner class Skill() {
+        public fun changeHexLight(i_executor: Int, j_executor: Int, radius : Int = 1) {
+            val vicinity = GameWorld.field.hexesInVicinityRadius(i_executor, j_executor, radius)
+                    ?: throw Exception("Error in hex lighting (wrong radius)")
+            vicinity.remove(Pair(i_executor, j_executor))
+            for (i in vicinity) {
+                val cur = GameWorld.field.field[i.first][i.second]
+                cur.lit = !cur.lit
+            }
+        }
+    }
+
+    inner class Jump() : Skill() {
         val radius = 2
 
         public fun jump(i_executor: Int, j_executor: Int, i_target: Int, j_target: Int): Boolean {
@@ -51,17 +63,9 @@ public class SkillExecutor(private val executorPlayerInd: Int) {
             return false
         }
 
-        public fun changeHexLight(i_executor: Int, j_executor: Int) {
-            val vicinity = GameWorld.field.hexesInVicinityRadius(i_executor, j_executor, radius)
-                    ?: throw Exception("Error in QuickShot (wrong radius)")
-            for (i in vicinity) {
-                val cur = GameWorld.field.field[i.first][i.second]
-                cur.lit = !cur.lit
-            }
-        }
     }
 
-    inner class QuickShot() {
+    inner class QuickShot() : Skill(){
         val damage = 1
         val radius = 2
 
@@ -75,17 +79,8 @@ public class SkillExecutor(private val executorPlayerInd: Int) {
             }
             return true
         }
-
-        public fun changeHexLight(i_executor: Int, j_executor: Int) {
-            val vicinity = GameWorld.field.hexesInVicinityRadius(i_executor, j_executor, radius)
-                    ?: throw Exception("Error in QuickShot (wrong radius)")
-            for (i in vicinity) {
-                val cur = GameWorld.field.field[i.first][i.second]
-                cur.lit = !cur.lit
-            }
-        }
     }
-    inner class Stab() {
+    inner class Stab() : Skill() {
         val damage = 1
 
         public fun stab(i_executor: Int, j_executor: Int, i_target: Int, j_target: Int): Boolean {
@@ -98,15 +93,6 @@ public class SkillExecutor(private val executorPlayerInd: Int) {
                         ?: return false].damageTaken(damage)
             }
             return true
-        }
-
-        public fun changeHexLight(i_executor: Int, j_executor: Int) {
-            val vicinity = GameWorld.field.hexesInVicinityRadius(i_executor, j_executor)
-                    ?: throw Exception("Error in Stab (wrong radius)")
-            for (i in vicinity) {
-                val cur = GameWorld.field.field[i.first][i.second]
-                cur.lit = !cur.lit
-            }
         }
     }
 
