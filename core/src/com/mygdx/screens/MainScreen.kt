@@ -16,7 +16,7 @@ import com.mygdx.game.DvHGame
 public class MainScreen(val game : DvHGame) : Screen
 {
     private val batcher = SpriteBatch()
-    private val stage   = Stage(FitViewport(360f, 640f), batcher)
+    private val stage   = Stage(FitViewport(Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat()), batcher)
 
     val font = AssetLoader.generateFont("Doux Medium.ttf", 40, Color.WHITE)
 
@@ -78,7 +78,7 @@ public class MainScreen(val game : DvHGame) : Screen
         batcher.draw(AssetLoader.backgroungs, 0f, 0f)
         batcher.end()
 
-        Gdx.app.log("FPS", fps.toString() + "")
+  //      Gdx.app.log("FPS", fps.toString() + "")
 
         stage.act(delta)
         stage.draw()

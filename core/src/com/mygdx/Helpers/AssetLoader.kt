@@ -21,7 +21,6 @@ object AssetLoader
 
     public var gameWorld : GameWorld by Delegates.notNull<GameWorld>()
 
-
     init
     {
         backgroungs = Texture(Gdx.files.internal("Data/Images/main2.jpg"))

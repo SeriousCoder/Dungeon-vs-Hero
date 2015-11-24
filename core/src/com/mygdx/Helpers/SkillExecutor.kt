@@ -76,8 +76,9 @@ public class SkillExecutor(private val executorPlayerInd: Int) {
             if (GameWorld.field.field[i_target][j_target].occupied) {
                 GameWorld.field.actors[GameWorld.field.findActorIndNotOwner(i_target, j_target, executorPlayerInd)
                         ?: return false].damageTaken(damage)
+                return true
             }
-            return true
+            return false
         }
     }
     inner class Stab() : Skill() {
@@ -91,8 +92,9 @@ public class SkillExecutor(private val executorPlayerInd: Int) {
             if (GameWorld.field.field[i_target][j_target].occupied) {
                 GameWorld.field.actors[GameWorld.field.findActorIndNotOwner(i_target, j_target, executorPlayerInd)
                         ?: return false].damageTaken(damage)
+                return true
             }
-            return true
+            return false
         }
     }
 

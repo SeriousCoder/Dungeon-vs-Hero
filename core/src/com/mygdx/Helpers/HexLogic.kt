@@ -48,7 +48,7 @@ public class HexField() {
             ).toList()}
     ).toList()
 
-    public  val actors = arrayListOf<ActorHex>()//shouldn't be public; temporary workaround
+    public val actors = arrayListOf<ActorHex>()
     public var deadActorsExist = false
     public fun addActor(actor : ActorHex) : Int{
         actors.add(actor)
@@ -80,17 +80,6 @@ public class HexField() {
         return null
     }
 
-    public fun findActorIndNotOwner(i : Int, j : Int, notOwner : Int) : Int?{
-        if (field[i][j].occupied) {
-            for (k in 0..actors.size - 1) {
-                val cur = actors[k]
-                if (cur.hex.i == i && cur.hex.j == j && cur.owner != notOwner)
-                    return k
-            }
-        }
-        return null
-    }
-
     public fun findActorInd(i : Int, j : Int) : Int?{
         if (field[i][j].occupied) {
             for (k in 0..actors.size - 1) {
@@ -102,34 +91,20 @@ public class HexField() {
         return null
     }
 
+    public fun findActorIndNotOwner(i : Int, j : Int, notOwner : Int) : Int?{
+        if (field[i][j].occupied) {
+            for (k in 0..actors.size - 1) {
+                val cur = actors[k]
+                if (cur.hex.i == i && cur.hex.j == j && cur.owner != notOwner)
+                    return k
+            }
+        }
+        return null
+    }
+
     public fun activatedActorInVicinityInd(i : Int, j : Int, owner : Int) : Int? {
         //returns index of first activated actor found in 6 nearby hexes
-        val searchAr = arrayListOf<Pair<Int, Int>>()
-        if (i % 2 == 0) {
-            //columns 0, 2, ...
-            if (i - 1 >= 0) {
-                if (j - 1 >= 0) searchAr.add(Pair(i - 1, j - 1))
-                searchAr.add(Pair(i - 1, j))//j always >= 0
-            }
-            if (i + 1 < width) {
-                if (j - 1 >= 0) searchAr.add(Pair(i + 1, j - 1))
-                searchAr.add(Pair(i + 1, j))//j always >= 0
-            }
-            if (j - 1 >= 0) searchAr.add(Pair(i, j - 1))
-            if (j + 1 < height) searchAr.add(Pair(i, j + 1))
-        }
-        else {
-            if (i - 1 >= 0) {
-                if (j + 1 < height) searchAr.add(Pair(i - 1, j + 1))
-                searchAr.add(Pair(i - 1, j))//j always >= 0
-            }
-            if (i + 1 < width) {
-                if (j + 1 < height) searchAr.add(Pair(i + 1, j + 1))
-                searchAr.add(Pair(i + 1, j))//j always >= 0
-            }
-            if (j - 1 >= 0) searchAr.add(Pair(i, j - 1))
-            if (j + 1 < height) searchAr.add(Pair(i, j + 1))
-        }
+        val searchAr = hexesInVicinity(i, j)
         for (k in searchAr) {
             val actInd = findActorInd(k.first, k.second, owner)
             if (actInd != null && actors[actInd].activated) return actInd

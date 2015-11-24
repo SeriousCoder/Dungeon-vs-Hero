@@ -52,32 +52,34 @@ object  GameRenderer {
         polygon.begin()
         for (i in 0.. field.width - 1) {
             for (j in 0..field.height - 1) {
-                val cur = field.field[i][j]
-                var curText = hex
-                if (cur.activated) {
-                    val actInd = field.findActorInd(cur.i, cur.j) ?: throw Exception("An actor doesn't belong to any player")
-                    if (field.actors[actInd].owner == 0) curText = hexActiveP0
-                    else curText = hexActiveP1
+                val curHex = field.field[i][j]
+                var curTexture = hex
+                if (curHex.activated) {
+                    val actInd = field.findActorInd(curHex.i, curHex.j)
+                            ?: throw Exception("An actor doesn't belong to any player")
+                    if (field.actors[actInd].owner == 0) curTexture = hexActiveP0
+                    else curTexture = hexActiveP1
                 }
-                polygon.draw(curText, cur.xl.toFloat() + (-47f + 20 * Math.sqrt(3.0) / 2).toFloat(),
-                        cur.yl.toFloat() + (-50f + 20 * Math.sqrt(3.0) / 2).toFloat())
-                if (cur.lit) {
+                polygon.draw(curTexture, curHex.xl.toFloat() + (-47f + 20 * Math.sqrt(3.0) / 2).toFloat(),
+                        curHex.yl.toFloat() + (-50f + 20 * Math.sqrt(3.0) / 2).toFloat())
+                if (curHex.lit) {
                     val c = polygon.color
                     polygon.setColor(c.r, c.g, c.b, .5f)
-                    polygon.draw(hexLit, cur.xl.toFloat() + (-47f + 20 * Math.sqrt(3.0) / 2).toFloat(),
-                            cur.yl.toFloat() + (-50f + 20 * Math.sqrt(3.0) / 2).toFloat())
+                    polygon.draw(hexLit, curHex.xl.toFloat() + (-47f + 20 * Math.sqrt(3.0) / 2).toFloat(),
+                            curHex.yl.toFloat() + (-50f + 20 * Math.sqrt(3.0) / 2).toFloat())
                     polygon.setColor(c.r, c.g, c.b, 1f)
                     continue
                 }
-                if (cur.occupied) {
-                    val actInd = field.findActorInd(cur.i, cur.j) ?: throw Exception("An actor doesn't belong to any player")
-                    if (field.actors[actInd].owner == 0) curText = hexActiveP0
-                    else curText = hexActiveP1
+                if (curHex.occupied) {
+                    val actInd = field.findActorInd(curHex.i, curHex.j)
+                            ?: throw Exception("An actor doesn't belong to any player")
+                    if (field.actors[actInd].owner == 0) curTexture = hexActiveP0
+                    else curTexture = hexActiveP1
 
                     val c = polygon.color
                     polygon.setColor(c.r, c.g, c.b, .35f)
-                    polygon.draw(curText, cur.xl.toFloat() + (-47f + 20 * Math.sqrt(3.0) / 2).toFloat(),
-                            cur.yl.toFloat() + (-50f + 20 * Math.sqrt(3.0) / 2).toFloat())
+                    polygon.draw(curTexture, curHex.xl.toFloat() + (-47f + 20 * Math.sqrt(3.0) / 2).toFloat(),
+                            curHex.yl.toFloat() + (-50f + 20 * Math.sqrt(3.0) / 2).toFloat())
                     polygon.setColor(c.r, c.g, c.b, 1f)
                 }
             }
