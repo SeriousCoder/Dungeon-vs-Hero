@@ -66,18 +66,20 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
     public fun addNewActorSkills() {
         val buttonsAtlas = TextureAtlas("Data/UI/SkillButtons.pack"); //** button atlas image **//
         val buttonSkin = Skin(buttonsAtlas)
-        val font = AssetLoader.generateFont("Doux Medium.ttf", 15, Color.RED)
+        val font = AssetLoader.generateFont("Doux Medium.ttf", 35, Color.WHITE)
 
         val newActorInd = player.actorIndices[player.actorsNum]
         val tempAr = arrayListOf<ImageTextButton>()
 
         val curActor = field.actors[newActorInd]
 
-        val labelStyle = Label.LabelStyle(font, Color.WHITE)
+        val labelStyle = Label.LabelStyle(font, font.color)
         val actionPoints = Label("AP: " + curActor.maxActionPoints.toString(), labelStyle)
+        actionPoints.x = virtualWidth - 100
+        actionPoints.y = 20f
         stageUI.addActor(actionPoints)
         actorsActionPoints.add(Pair(curActor, actionPoints))
-   //     actionPoints.isVisible = false
+        actionPoints.isVisible = false
 
         for (j in 0..curActor.skills.size - 1) {
             val skillName = curActor.skills[j].first
@@ -94,7 +96,6 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
             button.height = 70f
             button.setPosition((j * 80).toFloat(), 0f)
 
-            //button.addListener(btnListener(curActor, skillName, j))
             button.addListener(object : ClickListener() {
                 override fun clicked(event : InputEvent, x : Float, y : Float) {
                     val skillCost = curActor.skills[j].second
@@ -124,6 +125,15 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
             }
     }
 
+    fun changeVisibilityActionPoints(actor: ActorHex?) {
+        actor ?: return
+        for (i in actorsActionPoints)
+            if (i.first == actor) {
+                i.second.isVisible = !(i.second.isVisible)
+                break
+            }
+    }
+
     fun hideButtons() {
         for (btnArray in actorsSkillsBtns)
             for (btn in btnArray)
@@ -145,17 +155,26 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
 
                 curSkillVal.actor.skillHaveBeenUsed(curSkillVal.skillName)
                 updateActionPoints(curSkillVal.actor)
+                changeVisibilityActionPoints(curSkillVal.actor)
                 delCurSkill()
                 field.deactivateActorsExcept(-1)
                 hideButtons()
-                endTurn()
+                tryToEndTurn()
                 return true
             }
         }
         return false
     }
 
-    private fun endTurn() {
+    private fun checkIfNoAP() : Boolean{
+        var sum = 0
+        for (i in player.actorIndices)
+            sum += field.actors[i].curActionPoints
+        return sum == 0
+    }
+
+    private fun tryToEndTurn() {
+        if (!checkIfNoAP()) return
         dataHasBeenGot = true
         for (i in player.actorIndices) {
             val actor = field.actors[i]
@@ -168,8 +187,8 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
         val resolutionMultiplier = Gdx.graphics.width / virtualWidth
         val virtualX = screenX / resolutionMultiplier
         val virtualY =  (Gdx.graphics.height - screenY) / resolutionMultiplier
-        val hexInd = field.findHex(virtualX.toInt(), virtualY.toInt()) ?: return true
 
+        val hexInd = field.findHex(virtualX.toInt(), virtualY.toInt()) ?: return true
         val iInd = hexInd.first
         val jInd = hexInd.second
 
@@ -180,13 +199,12 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
 
             val curActor = field.actors[actInd]
 
-//            val curSkillVal = curSkill
-//            if (curSkillVal != null) {
             if (curSkill?.actor != curActor) delCurSkill()
-           // }
+
             if (tryToUseSkill(curActor)) return true
 
             field.deactivateActorsExcept(actInd)
+            changeVisibilityActionPoints(curActor)
             if (curActor.changeActivation()) {
                 Gdx.input.inputProcessor = stageUI
                 hideButtons()
@@ -206,16 +224,14 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
             if (!field.field[iInd][jInd].occupied) {
                 if (actInd != null) {
                     field.moveActor(actInd, field.field[iInd][jInd])
+                    val movingActor = field.actors[actInd]
+                    changeVisibilityActionPoints(movingActor)
                     delCurSkill()
                     hideButtons()
-                    endTurn()
+                    tryToEndTurn()
                 }
                 else {
-                    if (tryToUseSkill(iInd, jInd)) {
-                        delCurSkill()
-                        hideButtons()
-                        endTurn()
-                    }
+                    tryToUseSkill(iInd, jInd)
                 }
             }
             else {
@@ -226,34 +242,21 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
                 field.deactivateActorsExcept(-1)//dubious
             }
         }
-        return true // Return true to say we handled the touch.
-    }
-    override fun keyDown(keycode: Int): Boolean {
-        return false
+        return true
     }
 
-    override fun keyUp(keycode: Int): Boolean {
-        return false
-    }
+    override fun keyDown(keycode: Int): Boolean = false
 
-    override fun keyTyped(character: Char): Boolean {
-        return false
-    }
+    override fun keyUp(keycode: Int): Boolean = false
 
-    override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-        return false
-    }
+    override fun keyTyped(character: Char): Boolean = false
 
-    override fun touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean {
-        return false
-    }
+    override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean = false
 
-    override fun mouseMoved(screenX: Int, screenY: Int): Boolean {
-        return false
-    }
+    override fun touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean = false
 
-    override fun scrolled(amount: Int): Boolean {
-        return false
-    }
+    override fun mouseMoved(screenX: Int, screenY: Int): Boolean = false
+
+    override fun scrolled(amount: Int): Boolean = false
 
 }
