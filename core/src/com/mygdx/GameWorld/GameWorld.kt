@@ -16,6 +16,7 @@ import com.mygdx.game.gameObjects.Archer
 import com.mygdx.game.Helpers.InputHandler
 import com.mygdx.game.Helpers.HexField
 import com.mygdx.game.Player
+import java.util.*
 import kotlin.properties.Delegates
 
 object GameWorld {
@@ -37,13 +38,27 @@ object GameWorld {
       stage = Stage(FitViewport(virtualWidth, virtualHeight), batch)
       stage.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true);
 
+      val rand = Random(System.currentTimeMillis())
+      val a = arrayOf(rand.nextInt())
 
-      val archer = Archer(field.field[2][0], 1)
-      val demon = DemonFighter(field.field[0][0], 0)
-      val demon2 = DemonFighter(field.field[0][2], 1)
-      addActor(archer)
-      addActor(demon)
+//      val archer = Archer(field.field[2][0], 1)
+//      val demon = DemonFighter(field.field[0][0], 0)
+//      val demon2 = DemonFighter(field.field[0][2], 1)
+
+     // val archer = Archer(field.field[Math.abs(rand.nextInt()) % 5][Math.abs(rand.nextInt()) % 5], 1)
+      val archer2 = Archer(field.field[Math.abs(rand.nextInt())% 9][Math.abs(rand.nextInt())% 9], 0)
+   //   val demon = DemonFighter(field.field[Math.abs(rand.nextInt())% 5][Math.abs(rand.nextInt())% 5], 0)
+      val demon2 = DemonFighter(field.field[Math.abs(rand.nextInt())% 9][Math.abs(rand.nextInt())% 9], 1)
+      val demon3 = DemonFighter(field.field[Math.abs(rand.nextInt())% 9][Math.abs(rand.nextInt())% 9], 1)
+      val demon1 = DemonFighter(field.field[Math.abs(rand.nextInt())% 9][Math.abs(rand.nextInt())% 9], 1)
+      val demon4 = DemonFighter(field.field[Math.abs(rand.nextInt())% 9][Math.abs(rand.nextInt())% 9], 1)
+    //  addActor(archer)
+      addActor(archer2)
+    //  addActor(demon)
       addActor(demon2)
+      addActor(demon3)
+      addActor(demon1)
+      addActor(demon4)
 
       Gdx.input.inputProcessor = players[0].inHandler
     }

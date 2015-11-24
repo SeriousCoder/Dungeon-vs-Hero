@@ -5,6 +5,7 @@ import com.mygdx.game.Helpers.HexField
 import com.mygdx.game.Helpers.InputHandler
 import com.mygdx.GameObjects.ActorHex
 import com.mygdx.Helpers.SkillExecutor
+import com.mygdx.game.GameWorld.GameWorld
 import kotlin.properties.Delegates
 
 public class Player(val playerInd : Int, field : HexField, val skillExec: SkillExecutor, virtualHeight : Float,
@@ -52,5 +53,12 @@ public class Player(val playerInd : Int, field : HexField, val skillExec: SkillE
             return true
         }
         return false
+    }
+
+    public fun restoreActionPoints() {
+        for (i in actorIndices) {
+            val actor = GameWorld.field.actors[i]
+            actor.curActionPoints = actor.maxActionPoints
+        }
     }
 }

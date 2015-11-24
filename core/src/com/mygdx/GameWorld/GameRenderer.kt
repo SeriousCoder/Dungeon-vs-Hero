@@ -62,11 +62,23 @@ object  GameRenderer {
                 polygon.draw(curText, cur.xl.toFloat() + (-47f + 20 * Math.sqrt(3.0) / 2).toFloat(),
                         cur.yl.toFloat() + (-50f + 20 * Math.sqrt(3.0) / 2).toFloat())
                 if (cur.lit) {
-                    val c = polygon.getColor();
-                    polygon.setColor(c.r, c.g, c.b, .5f);
+                    val c = polygon.color
+                    polygon.setColor(c.r, c.g, c.b, .5f)
                     polygon.draw(hexLit, cur.xl.toFloat() + (-47f + 20 * Math.sqrt(3.0) / 2).toFloat(),
                             cur.yl.toFloat() + (-50f + 20 * Math.sqrt(3.0) / 2).toFloat())
-                    polygon.setColor(c.r, c.g, c.b, 1f);
+                    polygon.setColor(c.r, c.g, c.b, 1f)
+                    continue
+                }
+                if (cur.occupied) {
+                    val actInd = field.findActorInd(cur.i, cur.j) ?: throw Exception("An actor doesn't belong to any player")
+                    if (field.actors[actInd].owner == 0) curText = hexActiveP0
+                    else curText = hexActiveP1
+
+                    val c = polygon.color
+                    polygon.setColor(c.r, c.g, c.b, .35f)
+                    polygon.draw(curText, cur.xl.toFloat() + (-47f + 20 * Math.sqrt(3.0) / 2).toFloat(),
+                            cur.yl.toFloat() + (-50f + 20 * Math.sqrt(3.0) / 2).toFloat())
+                    polygon.setColor(c.r, c.g, c.b, 1f)
                 }
             }
         }

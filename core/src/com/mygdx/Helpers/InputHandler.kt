@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.viewport.FitViewport
@@ -20,12 +19,12 @@ import kotlin.properties.Delegates
 
 class InputHandler (private val field : HexField, private val skillExec : SkillExecutor,
                     private val virtualHeight : Float, private val virtualWidth : Float, private val player: Player) : InputProcessor {
-    private var stageUI  : Stage by Delegates.notNull<Stage>()
-    private var curSkill : SkillBeingUsedData? = null
-    val font = AssetLoader.generateFont("Doux Medium.ttf", 35, Color.WHITE)
-
-    val actorsSkillsBtns = arrayListOf<ArrayList<ImageTextButton>>()
+    private var stageUI    : Stage by Delegates.notNull<Stage>()
+    private var curSkill   : SkillBeingUsedData? = null
     var actorsActionPoints : Label by Delegates.notNull<Label>()
+    var skillDescription   : Label by Delegates.notNull<Label>()
+
+    val actorsSkillsBtns = arrayListOf<ArrayList<ImageButton>>()
     var dataHasBeenGot   = false
 
     init {
@@ -45,13 +44,21 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
             }
         })
 
-        val labelStyle = Label.LabelStyle(font, font.color)
-        actorsActionPoints = Label("AP: ", labelStyle)
+        val fontBig    = AssetLoader.generateFont("Doux Medium.ttf", 35, Color.WHITE)
+        var labelStyle = Label.LabelStyle(fontBig, fontBig.color)
+        actorsActionPoints   = Label("AP: ", labelStyle)
         actorsActionPoints.x = virtualWidth - 100
         actorsActionPoints.y = 20f
         actorsActionPoints.isVisible = false
 
+        val fontSmall = AssetLoader.generateFont("Doux Medium.ttf", 25, Color.WHITE)
+        labelStyle    = Label.LabelStyle(fontSmall, fontSmall.color)
+        skillDescription   = Label("", labelStyle)
+        skillDescription.x = 20f
+        skillDescription.y = virtualHeight - 50
+
         stageUI.addActor(actorsActionPoints)
+        stageUI.addActor(skillDescription)
     }
 
     private fun getThisInputHandler() : InputHandler{
@@ -74,25 +81,24 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
 
     public fun addNewActorSkills() {
         val buttonsAtlas = TextureAtlas("Data/UI/SkillButtons.pack"); //** button atlas image **//
-        val buttonSkin = Skin(buttonsAtlas)
+        val buttonSkin   = Skin(buttonsAtlas)
 
         val newActorInd = player.actorIndices[player.actorsNum]
-        val tempAr = arrayListOf<ImageTextButton>()
+        val tempAr      = arrayListOf<ImageButton>()
 
         val curActor = field.actors[newActorInd]
 
         for (j in 0..curActor.skills.size - 1) {
-            val skillName = curActor.skills[j].first
+            val skillName     = curActor.skills[j].first
             val skillPicsPair = curActor.skillPics[skillName]
                     ?: throw  Exception("Something's wrong with skill names/skill pics names")
 
-            val style = ImageTextButton.ImageTextButtonStyle()
-            style.up = buttonSkin.getDrawable(skillPicsPair.first)
+            val style  = ImageButton.ImageButtonStyle()
+            style.up   = buttonSkin.getDrawable(skillPicsPair.first)
             style.down = buttonSkin.getDrawable(skillPicsPair.second)
-            style.font = font
 
-            val button = ImageTextButton("", style)
-            button.width = 70f
+            val button    = ImageButton(style)
+            button.width  = 70f
             button.height = 70f
             button.setPosition((j * 80).toFloat(), 0f)
 
@@ -106,6 +112,7 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
                         curSkill = SkillBeingUsedData(skillName, curActor, iInd, jInd)
                         skillExec.changeHexLightForSkill(skillName, iInd, jInd)
                         Gdx.input.inputProcessor = getThisInputHandler()
+                        skillDescription.setText(skillName)
                     }
                 }
             })
@@ -146,12 +153,9 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
 
                 curSkillVal.actor.skillHaveBeenUsed(curSkillVal.skillName)
                 updateActionPoints(curSkillVal.actor)
-                //changeVisibilityActionPoints()
+                cleanUpAfterUsingSkill()
                 actorsActionPoints.isVisible = false
-                delCurSkill()
                 field.deactivateActorsExcept(-1)
-                hideButtons()
-                tryToEndTurn()
                 return true
             }
         }
@@ -168,10 +172,42 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
     private fun tryToEndTurn() {
         if (!checkIfNoAP()) return
         dataHasBeenGot = true
-        for (i in player.actorIndices) {
-            val actor = field.actors[i]
-            actor.curActionPoints = actor.maxActionPoints
+        player.restoreActionPoints()
+    }
+
+    private fun deactivateActorUI() {
+        GameRenderer.disableDrawingUI()
+        actorsActionPoints.isVisible = false
+        delCurSkill()
+        hideButtons()
+        skillDescription.setText("")
+    }
+
+    private fun activateActorUI(actIndInPlayer : Int) {
+        Gdx.input.inputProcessor = stageUI
+        hideButtons()
+        for (btn in actorsSkillsBtns[actIndInPlayer])
+            btn.isVisible = true
+        actorsActionPoints.isVisible = true
+        GameRenderer.enableDrawingUI(stageUI)
+    }
+
+    private fun moveActor(actInd : Int, iInd : Int, jInd : Int) {
+        val moveCost = 1
+        val movingActor = field.actors[actInd]
+        if (movingActor.curActionPoints >= moveCost) {
+            field.moveActor(actInd, field.field[iInd][jInd])
+            movingActor.curActionPoints--
+            cleanUpAfterUsingSkill()
         }
+    }
+
+    private fun cleanUpAfterUsingSkill() {
+        changeVisibilityActionPoints()
+        delCurSkill()
+        hideButtons()
+        skillDescription.setText("")
+        tryToEndTurn()
     }
 
     override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int) : Boolean {
@@ -194,49 +230,29 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
             if (curSkill?.actor != curActor) delCurSkill()
 
             if (tryToUseSkill(curActor)) return true
+            else {
+                delCurSkill()
+                hideButtons()
+            }
 
             field.deactivateActorsExcept(actInd)
             //changeVisibilityActionPoints()
             updateActionPoints(curActor)
-            if (curActor.changeActivation()) {
-                Gdx.input.inputProcessor = stageUI
-                hideButtons()
-                for (btn in actorsSkillsBtns[actIndInPlayer])
-                    btn.isVisible = true
-                actorsActionPoints.isVisible = true
-                GameRenderer.enableDrawingUI(stageUI)
-            }
-            else {
-                GameRenderer.disableDrawingUI()
-                actorsActionPoints.isVisible = false
-                delCurSkill()
-                for (btn in actorsSkillsBtns[actIndInPlayer])
-                    btn.isVisible = false
-            }
+            if (curActor.changeActivation()) activateActorUI(actIndInPlayer)
+            else deactivateActorUI()
         }
         else {
             actInd = field.activatedActorInVicinityInd(iInd, jInd, player.playerInd)
             if (!field.field[iInd][jInd].occupied) {
-                if (actInd != null) {
-                    val moveCost = 1
-                    val movingActor = field.actors[actInd]
-                    if (movingActor.curActionPoints >= moveCost) {
-                        field.moveActor(actInd, field.field[iInd][jInd])
-                        movingActor.curActionPoints--
-                        changeVisibilityActionPoints()
-                        delCurSkill()
-                        hideButtons()
-                        tryToEndTurn()
-                    }
-                }
-                else {
-                    tryToUseSkill(iInd, jInd)
+                val skillHasSucceeded =  tryToUseSkill(iInd, jInd)
+                if (actInd != null && !skillHasSucceeded) {
+                    moveActor(actInd, iInd, jInd)
                 }
             }
             else {
                 var actEnemyInd = field.findActorInd(iInd, jInd)
                 if (actEnemyInd != null) {
-                    tryToUseSkill(field.actors[actEnemyInd])
+                    if (!tryToUseSkill(field.actors[actEnemyInd])) deactivateActorUI()
                 }
                 field.deactivateActorsExcept(-1)//dubious
             }
