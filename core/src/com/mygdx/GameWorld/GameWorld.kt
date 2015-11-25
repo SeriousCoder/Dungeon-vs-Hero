@@ -16,31 +16,49 @@ import com.mygdx.game.gameObjects.Archer
 import com.mygdx.game.Helpers.InputHandler
 import com.mygdx.game.Helpers.HexField
 import com.mygdx.game.Player
+import java.util.*
 import kotlin.properties.Delegates
 
-class GameWorld(public val batch : PolygonSpriteBatch, public val field : HexField) {
-
+object GameWorld {
+    public var batch : PolygonSpriteBatch by Delegates.notNull<PolygonSpriteBatch>()
+    public val field = HexField()
     val virtualWidth  = 360f
     val virtualHeight = 640f
     //because of line below, it'll work correctly only on 16:9 resolutions.
    // val resolutionMultiplier = Gdx.graphics.width / virtualWidth
-    private var stage: Stage by Delegates.notNull<Stage>()
+    public var stage: Stage by Delegates.notNull<Stage>()
 
-    val players = listOf(Player(0, field, SkillExecutor(this, 0), virtualHeight, virtualWidth),
-            Player(1, field, SkillExecutor(this, 1), virtualHeight, virtualWidth))
+    val players = listOf(Player(0, field, SkillExecutor(0), virtualHeight, virtualWidth),
+            Player(1, field, SkillExecutor(1), virtualHeight, virtualWidth))
   //  val player0 = Player(0, InputHandler(field, virtualHeight.toInt(), resolutionMultiplier))
   //  val player1 = Player(1, InputHandler(field, virtualHeight.toInt(), resolutionMultiplier))
     init {
+      batch = PolygonSpriteBatch()
+
       stage = Stage(FitViewport(virtualWidth, virtualHeight), batch)
       stage.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true);
 
+      val rand = Random(System.currentTimeMillis())
+      val a = arrayOf(rand.nextInt())
 
-      val archer = Archer(field.field[5][5], 1)
-      val demon = DemonFighter(field.field[0][0], 0)
-      val demon2 = DemonFighter(field.field[3][3], 1)
-      addActor(archer)
-      addActor(demon)
+//      val archer = Archer(field.field[2][0], 1)
+//      val demon = DemonFighter(field.field[0][0], 0)
+//      val demon2 = DemonFighter(field.field[0][2], 1)
+
+     // val archer = Archer(field.field[Math.abs(rand.nextInt()) % 5][Math.abs(rand.nextInt()) % 5], 1)
+      val archer2 = Archer(field.field[Math.abs(rand.nextInt())% 9][Math.abs(rand.nextInt())% 9], 0)
+   //   val demon = DemonFighter(field.field[Math.abs(rand.nextInt())% 5][Math.abs(rand.nextInt())% 5], 0)
+      val demon2 = DemonFighter(field.field[Math.abs(rand.nextInt())% 9][Math.abs(rand.nextInt())% 9], 1)
+      val demon3 = DemonFighter(field.field[Math.abs(rand.nextInt())% 9][Math.abs(rand.nextInt())% 9], 1)
+      val demon1 = DemonFighter(field.field[Math.abs(rand.nextInt())% 9][Math.abs(rand.nextInt())% 9], 1)
+      val demon4 = DemonFighter(field.field[Math.abs(rand.nextInt())% 9][Math.abs(rand.nextInt())% 9], 1)
+    //  addActor(archer)
+      addActor(archer2)
+    //  addActor(demon)
       addActor(demon2)
+      addActor(demon3)
+      addActor(demon1)
+      addActor(demon4)
 
       Gdx.input.inputProcessor = players[0].inHandler
     }
@@ -65,6 +83,7 @@ class GameWorld(public val batch : PolygonSpriteBatch, public val field : HexFie
                 curActor.hex.occupied = false
 
                 players[curActor.owner].delActorInd(i)
+                players[1 - curActor.owner].correctActorFieldIndicesAfterDeletion(i)
                 curActor.remove()
                 field.actors.remove(curActor)
             }
@@ -74,16 +93,10 @@ class GameWorld(public val batch : PolygonSpriteBatch, public val field : HexFie
 
     fun update() {
         if (field.deadActorsExist) removeDeadActors()
-        stage.draw()
-        if (Gdx.input.inputProcessor is Stage) {
-            val curStage = Gdx.input.inputProcessor as Stage
-            curStage.draw()
-            curStage.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true);
-        }
-        stage.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true);
     }
 
     fun dispose() {
         stage.dispose()
+        batch.dispose()
     }
 }

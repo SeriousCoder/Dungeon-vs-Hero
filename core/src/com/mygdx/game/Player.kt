@@ -5,6 +5,7 @@ import com.mygdx.game.Helpers.HexField
 import com.mygdx.game.Helpers.InputHandler
 import com.mygdx.GameObjects.ActorHex
 import com.mygdx.Helpers.SkillExecutor
+import com.mygdx.game.GameWorld.GameWorld
 import kotlin.properties.Delegates
 
 public class Player(val playerInd : Int, field : HexField, val skillExec: SkillExecutor, virtualHeight : Float,
@@ -19,7 +20,7 @@ public class Player(val playerInd : Int, field : HexField, val skillExec: SkillE
     }
 
     public fun fieldActorIndToPlayerActorInd(ind : Int) : Int {
-        return actorIndices.binarySearch(ind, 0)
+        return actorIndices.binarySearch(ind, 0, actorsNum)
     }
 
     public fun grabInput() {
@@ -33,9 +34,17 @@ public class Player(val playerInd : Int, field : HexField, val skillExec: SkillE
     }
 
     public fun delActorInd(actorInd : Int) {
+        inHandler.actorsSkillsBtns.removeAt(fieldActorIndToPlayerActorInd(actorInd))
         actorIndices.remove(actorInd)
     //    inHandler.removeActorSkills()
         actorsNum--
+        correctActorFieldIndicesAfterDeletion(actorInd)
+    }
+
+    public fun correctActorFieldIndicesAfterDeletion(actorInd: Int) {
+        for (i in actorIndices.indices) {
+            if (actorIndices[i] > actorInd) actorIndices[i]--
+        }
     }
 
     public fun getInput() : Boolean {
@@ -44,5 +53,12 @@ public class Player(val playerInd : Int, field : HexField, val skillExec: SkillE
             return true
         }
         return false
+    }
+
+    public fun restoreActionPoints() {
+        for (i in actorIndices) {
+            val actor = GameWorld.field.actors[i]
+            actor.curActionPoints = actor.maxActionPoints
+        }
     }
 }

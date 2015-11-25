@@ -8,8 +8,8 @@ public abstract class ActorHex(var hex : HexForLogic, val owner : Int) : Actor()
     var activated = false
     var actorX = hex.xl + 5
     var actorY = hex.yl + 5
-    val maxActionPoints = 2
-    var curActionPoints = maxActionPoints
+    open val maxActionPoints = 2
+    open var curActionPoints = maxActionPoints
     val maxHealthPoints = 1
     var curHealthPoints = maxHealthPoints
 

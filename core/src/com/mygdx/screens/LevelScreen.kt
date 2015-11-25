@@ -12,22 +12,21 @@ import kotlin.properties.Delegates
 
 public class LevelScreen(val asset: AssetLoader, game : DvHGame) : Screen
 {
-    private var batch : PolygonSpriteBatch by Delegates.notNull<PolygonSpriteBatch>()
-    private var renderer : GameRenderer by Delegates.notNull<GameRenderer>()
+
+   // private var renderer : GameRenderer by Delegates.notNull<GameRenderer>()
 
     init {
-        batch = PolygonSpriteBatch()
-        asset.gameWorld = GameWorld(batch, HexField())
-        renderer = GameRenderer(asset.gameWorld)
+        asset.gameWorld = GameWorld
+       // renderer = GameRenderer
     }
 
     override fun render(delta: Float) {
-        renderer.render()
+        GameRenderer.render()
     }
 
     override fun dispose() {
-        renderer.dispose()
-        batch.dispose()
+        GameRenderer.dispose()
+
         asset.gameWorld.dispose()
     }
 

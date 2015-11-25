@@ -51,9 +51,7 @@ public class DvHGame() : Game() {
 
     public override fun create() {
         Gdx.app.log("Game", "created")
-        val asset = AssetLoader()
-        asset.load()
-        setScreen(MainScreen(asset, this))
+        setScreen(MainScreen(this))
     }
 
     public override fun dispose() {
