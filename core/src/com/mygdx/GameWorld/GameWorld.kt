@@ -1,16 +1,19 @@
 package com.mygdx.game.GameWorld
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
+import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.mygdx.GameObjects.ActorHex
 import com.mygdx.GameObjects.DemonFighter
+import com.mygdx.Helpers.AssetLoader
 import com.mygdx.Helpers.SkillExecutor
 import com.mygdx.game.gameObjects.Archer
 import com.mygdx.game.Helpers.InputHandler
@@ -30,6 +33,7 @@ object GameWorld {
 
     val players = listOf(Player(0, field, SkillExecutor(0), virtualHeight, virtualWidth),
             Player(1, field, SkillExecutor(1), virtualHeight, virtualWidth))
+    val playerTurnLabels = arrayListOf<Label>()
   //  val player0 = Player(0, InputHandler(field, virtualHeight.toInt(), resolutionMultiplier))
   //  val player1 = Player(1, InputHandler(field, virtualHeight.toInt(), resolutionMultiplier))
     init {
@@ -60,6 +64,18 @@ object GameWorld {
       addActor(demon1)
       addActor(demon4)
 
+      for (i in 0..1) {
+          val playerColor = if (i ==0) Color.RED else Color.CYAN
+          var fontPlayerColor = AssetLoader.generateFont("Doux Medium.ttf", 25, playerColor)
+          var labelStyle = Label.LabelStyle(fontPlayerColor, playerColor)
+          var turnLabel   = Label("Turn of player $i", labelStyle)
+          turnLabel.x = virtualWidth - 180
+          turnLabel.y = virtualHeight - 30
+          turnLabel.isVisible = i == 0
+          playerTurnLabels.add(turnLabel)
+          stage.addActor(turnLabel)
+      }
+
       Gdx.input.inputProcessor = players[0].inHandler
     }
 
@@ -89,6 +105,21 @@ object GameWorld {
             }
         }
         field.deadActorsExist = false
+        checkVictory()
+    }
+
+    private fun checkVictory() {
+        for (i in players) {
+            if (i.actorIndices.isEmpty()) {
+                val playerColor = if (i.playerInd == 0) Color.CYAN else Color.RED
+                var fontPlayerColor = AssetLoader.generateFont("Doux Medium.ttf", 35, playerColor)
+                var labelStyle = Label.LabelStyle(fontPlayerColor, playerColor)
+                var endLabel   = Label("Player ${1 - i.playerInd} wins!", labelStyle)
+                endLabel.x = virtualWidth/2 - 80
+                endLabel.y = virtualHeight/2
+                stage.addActor(endLabel)
+            }
+        }
     }
 
     fun update() {

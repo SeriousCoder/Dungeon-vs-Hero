@@ -87,7 +87,9 @@ object  GameRenderer {
         polygon.end()
 
         if (GameWorld.players[curPlayer].getInput()) {
+            GameWorld.playerTurnLabels[curPlayer].isVisible = false
             curPlayer = 1 - curPlayer
+            GameWorld.playerTurnLabels[curPlayer].isVisible = true
             GameWorld.players[curPlayer].grabInput()
         }
 
