@@ -13,12 +13,17 @@ import com.mygdx.GameObjects.ActorHex
 import com.mygdx.Helpers.AssetLoader
 import com.mygdx.Helpers.SkillExecutor
 import com.mygdx.game.GameWorld.GameRenderer
+import com.mygdx.game.GameWorld.GameWorld
 import com.mygdx.game.Player
 import java.util.*
 import kotlin.properties.Delegates
 
-class InputHandler (private val field : HexField, private val skillExec : SkillExecutor,
-                    private val virtualHeight : Float, private val virtualWidth : Float, private val player: Player) : InputProcessor {
+class InputHandler (private val gameWorld: GameWorld,
+                    private val gameRenderer: GameRenderer,
+                    private val skillExec : SkillExecutor,
+                    private val virtualHeight : Float, private val virtualWidth : Float,
+                    private val player: Player) : InputProcessor {
+    private val field = gameWorld.field
     private var stageUI    : Stage by Delegates.notNull<Stage>()
     private var curSkill   : SkillBeingUsedData? = null
     var actorsActionPoints : Label by Delegates.notNull<Label>()
@@ -176,7 +181,7 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
     }
 
     private fun deactivateActorUI() {
-        GameRenderer.disableDrawingUI()
+        gameRenderer.disableDrawingUI()
         actorsActionPoints.isVisible = false
         delCurSkill()
         hideButtons()
@@ -189,7 +194,7 @@ class InputHandler (private val field : HexField, private val skillExec : SkillE
         for (btn in actorsSkillsBtns[actIndInPlayer])
             btn.isVisible = true
         actorsActionPoints.isVisible = true
-        GameRenderer.enableDrawingUI(stageUI)
+        gameRenderer.enableDrawingUI(stageUI)
     }
 
     private fun moveActor(actInd : Int, iInd : Int, jInd : Int) {

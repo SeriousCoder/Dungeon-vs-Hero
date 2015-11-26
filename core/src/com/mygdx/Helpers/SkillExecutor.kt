@@ -6,7 +6,7 @@ import com.mygdx.game.Helpers.InputHandler
 /**
  * Created by Alexander on 14.11.2015.
  */
-public class SkillExecutor(private val executorPlayerInd: Int) {
+public class SkillExecutor(private val gameWorld: GameWorld, private val executorPlayerInd: Int) {
     private val quickShot = QuickShot()
     private val stab = Stab()
     private val jump = Jump()
@@ -36,11 +36,11 @@ public class SkillExecutor(private val executorPlayerInd: Int) {
 
     open inner class Skill() {
         public fun changeHexLight(i_executor: Int, j_executor: Int, radius : Int = 1) {
-            val vicinity = GameWorld.field.hexesInVicinityRadius(i_executor, j_executor, radius)
+            val vicinity = gameWorld.field.hexesInVicinityRadius(i_executor, j_executor, radius)
                     ?: throw Exception("Error in hex lighting (wrong radius)")
             vicinity.remove(Pair(i_executor, j_executor))
             for (i in vicinity) {
-                val cur = GameWorld.field.field[i.first][i.second]
+                val cur = gameWorld.field.field[i.first][i.second]
                 cur.lit = !cur.lit
             }
         }
@@ -50,14 +50,14 @@ public class SkillExecutor(private val executorPlayerInd: Int) {
         val radius = 2
 
         public fun jump(i_executor: Int, j_executor: Int, i_target: Int, j_target: Int): Boolean {
-            val vicinity = GameWorld.field.hexesInVicinityRadius(i_executor, j_executor, radius)
+            val vicinity = gameWorld.field.hexesInVicinityRadius(i_executor, j_executor, radius)
                     ?: throw Exception("Error in QuickShot (wrong radius)")
             if (!vicinity.contains(Pair(i_target, j_target))) return false
-            val moveTo = GameWorld.field.field[i_target][j_target]
+            val moveTo = gameWorld.field.field[i_target][j_target]
             if (!moveTo.occupied) {
-                val actor = GameWorld.field.findActorInd(i_executor, j_executor)
+                val actor = gameWorld.field.findActorInd(i_executor, j_executor)
                         ?: throw Exception("No actor on hex on which skill Jump has been activated")
-                GameWorld.field.moveActor(actor, moveTo)
+                gameWorld.field.moveActor(actor, moveTo)
                 return true
             }
             return false
@@ -70,11 +70,11 @@ public class SkillExecutor(private val executorPlayerInd: Int) {
         val radius = 2
 
         public fun quickShot(i_executor: Int, j_executor: Int, i_target: Int, j_target: Int): Boolean {
-            val vicinity = GameWorld.field.hexesInVicinityRadius(i_executor, j_executor, radius)
+            val vicinity = gameWorld.field.hexesInVicinityRadius(i_executor, j_executor, radius)
                     ?: throw Exception("Error in QuickShot (wrong radius)")
             if (!vicinity.contains(Pair(i_target, j_target))) return false
-            if (GameWorld.field.field[i_target][j_target].occupied) {
-                GameWorld.field.actors[GameWorld.field.findActorIndNotOwner(i_target, j_target, executorPlayerInd)
+            if (gameWorld.field.field[i_target][j_target].occupied) {
+                gameWorld.field.actors[gameWorld.field.findActorIndNotOwner(i_target, j_target, executorPlayerInd)
                         ?: return false].damageTaken(damage)
                 return true
             }
@@ -85,12 +85,12 @@ public class SkillExecutor(private val executorPlayerInd: Int) {
         val damage = 1
 
         public fun stab(i_executor: Int, j_executor: Int, i_target: Int, j_target: Int): Boolean {
-            val vicinity = GameWorld.field.hexesInVicinityRadius(i_executor, j_executor)
+            val vicinity = gameWorld.field.hexesInVicinityRadius(i_executor, j_executor)
                     ?: throw Exception("Error in Stab (wrong radius)")
             if (!vicinity.contains(Pair(i_target, j_target))) return false
             //if (Math.abs(i_executor - i_target) > 1 || Math.abs(j_executor - j_target) > 1) return false
-            if (GameWorld.field.field[i_target][j_target].occupied) {
-                GameWorld.field.actors[GameWorld.field.findActorIndNotOwner(i_target, j_target, executorPlayerInd)
+            if (gameWorld.field.field[i_target][j_target].occupied) {
+                gameWorld.field.actors[gameWorld.field.findActorIndNotOwner(i_target, j_target, executorPlayerInd)
                         ?: return false].damageTaken(damage)
                 return true
             }

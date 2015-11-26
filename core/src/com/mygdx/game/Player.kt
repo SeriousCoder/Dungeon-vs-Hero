@@ -5,18 +5,21 @@ import com.mygdx.game.Helpers.HexField
 import com.mygdx.game.Helpers.InputHandler
 import com.mygdx.GameObjects.ActorHex
 import com.mygdx.Helpers.SkillExecutor
+import com.mygdx.game.GameWorld.GameRenderer
 import com.mygdx.game.GameWorld.GameWorld
 import kotlin.properties.Delegates
 
-public class Player(val playerInd : Int, field : HexField, val skillExec: SkillExecutor, virtualHeight : Float,
-                    virtualWidth : Float, private var isAI : Boolean= false) {
+public class Player(private val gameWorld: GameWorld, gameRenderer: GameRenderer,
+                    val playerInd : Int, val skillExec: SkillExecutor,
+                    virtualHeight : Float, virtualWidth : Float,
+                    private var isAI : Boolean = false) {
     //if inputHandler == null, it's an AI player.
     //NO actionPoints!!! They belong to actors!
     var inHandler : InputHandler by Delegates.notNull<InputHandler>()
     var actorIndices = arrayListOf<Int>()
     var actorsNum = 0
     init {
-        if (!isAI) inHandler = InputHandler(field, skillExec, virtualHeight, virtualWidth, this)
+        if (!isAI) inHandler = InputHandler(gameWorld, gameRenderer, skillExec, virtualHeight, virtualWidth, this)
     }
 
     public fun fieldActorIndToPlayerActorInd(ind : Int) : Int {
@@ -57,7 +60,7 @@ public class Player(val playerInd : Int, field : HexField, val skillExec: SkillE
 
     public fun restoreActionPoints() {
         for (i in actorIndices) {
-            val actor = GameWorld.field.actors[i]
+            val actor = gameWorld.field.actors[i]
             actor.curActionPoints = actor.maxActionPoints
         }
     }
