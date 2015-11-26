@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.mygdx.game.Helpers.*
 import kotlin.properties.Delegates
 
-object  GameRenderer {
+class GameRenderer(val gameWorld: GameWorld) {
 
 	private var polygon : PolygonSpriteBatch by Delegates.notNull<PolygonSpriteBatch>()
 	private var field : HexField by Delegates.notNull<HexField>()
@@ -27,8 +27,8 @@ object  GameRenderer {
 
     init {
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1f)
-        polygon = GameWorld.batch
-        field   = GameWorld.field
+        polygon = gameWorld.batch
+        field   = gameWorld.field
         val r = field.hexR.toFloat()
         hex  = HexPolygon(r, null).hexRegion
         hexLit = HexPolygon(r, "lit").hexRegion
@@ -86,14 +86,16 @@ object  GameRenderer {
         }
         polygon.end()
 
-        if (GameWorld.players[curPlayer].getInput()) {
+        if (gameWorld.players[curPlayer].getInput()) {
+            gameWorld.playerTurnLabels[curPlayer].isVisible = false
             curPlayer = 1 - curPlayer
-            GameWorld.players[curPlayer].grabInput()
+            gameWorld.playerTurnLabels[curPlayer].isVisible = true
+            gameWorld.players[curPlayer].grabInput()
         }
 
-        GameWorld.update()
-        GameWorld.stage.draw()
-        GameWorld.stage.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true);
+        gameWorld.update()
+        gameWorld.stage.draw()
+        gameWorld.stage.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true);
 
         if (drawUI) {
             val uiStageVal = stageUI ?: throw Exception("Error in ui stage in GameRenderer")

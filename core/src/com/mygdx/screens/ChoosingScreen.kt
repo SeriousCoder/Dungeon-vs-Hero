@@ -7,13 +7,14 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.ui.*
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.mygdx.Helpers.AssetLoader
 import com.mygdx.game.DvHGame
 
-public class MainScreen(val game : DvHGame) : Screen
+public class ChoosingScreen(game : DvHGame) : Screen
 {
     private val batcher = SpriteBatch()
     private val stage   = Stage(FitViewport(Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat()), batcher)
@@ -23,48 +24,56 @@ public class MainScreen(val game : DvHGame) : Screen
     init
     {
         stage.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true);
-        val play = ImageButton(AssetLoader.getImageButtonStyle(0, 0, 0, 0, 150, 150))
+        val skin = Skin(Gdx.files.internal("uiskin.json"));
+        val single = TextButton("One player", skin, "default")
+        val multi = TextButton("Two players", skin, "default")
 
-        play.addListener(object : ClickListener()
+        val width = 250f
+        val height = 70f
+
+        single.width = width
+        single.height = height
+
+        multi.width = width
+        multi.height = height
+
+        single.addListener(object : ClickListener()
         {
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                game.screen = ChoosingScreen(game)
+                game.screen = LevelScreen(game)
             }
         })
 
-        val titleStyle = Label.LabelStyle()
-        titleStyle.font = font
+        multi.addListener(object : ClickListener()
+        {
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                game.screen = LevelScreen(game)
+            }
+        })
 
-        val title1 = Label("Dungeon", titleStyle)
-        val title2 = Label("vs", titleStyle)
-        val title3 = Label("Hero", titleStyle)
+        val screenHeight = Gdx.graphics.height.toFloat()
+        val screenWidth = Gdx.graphics.width.toFloat()
 
-        title1.setPosition(105f, 460f)
-        title2.setPosition(160f, 430f)
-        title3.setPosition(135f, 400f)
+        single.setPosition((screenWidth - width) / 2, screenHeight/ 3 - height /2)
+        multi.setPosition((screenWidth - width) / 2, 2 * screenHeight /3 - height / 2)
 
-        play.setPosition(110f, 120f)
-
-        stage.addActor(title1)
-        stage.addActor(title2)
-        stage.addActor(title3)
-        stage.addActor(play)
-
+        stage.addActor(single)
+        stage.addActor(multi)
         Gdx.input.inputProcessor = stage
     }
 
 
 
     override fun pause() {
-    //    Gdx.app.log("Screen", "paused")
+       // Gdx.app.log("Screen", "paused")
     }
 
     override fun resize(width: Int, height: Int) {
-    //    Gdx.app.log("Screen", "resized")
+        //Gdx.app.log("Screen", "resized")
     }
 
     override fun hide() {
-    //    Gdx.app.log("Screen", "hided")
+       // Gdx.app.log("Screen", "hidden")
     }
 
     override fun render(delta: Float)
@@ -78,7 +87,7 @@ public class MainScreen(val game : DvHGame) : Screen
         batcher.draw(AssetLoader.backgroungs, 0f, 0f)
         batcher.end()
 
-  //      Gdx.app.log("FPS", fps.toString() + "")
+        //      Gdx.app.log("FPS", fps.toString() + "")
 
         stage.act(delta)
         stage.draw()
@@ -86,15 +95,15 @@ public class MainScreen(val game : DvHGame) : Screen
     }
 
     override fun resume() {
-    //    Gdx.app.log("Screen", "resumed")
+      //  Gdx.app.log("Screen", "resumed")
     }
 
     override fun dispose() {
-     //   Gdx.app.log("Screen", "disposed")
+      //  Gdx.app.log("Screen", "disposed")
     }
 
     override fun show() {
-    //    Gdx.app.log("Screen", "showed")
+       // Gdx.app.log("Screen", "showed")
     }
 
 }
