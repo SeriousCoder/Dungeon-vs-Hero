@@ -44,9 +44,9 @@ class GameWorld() {
         val actorPlacer = ActorPlacer()
         actorPlacer.addActorAtRandomPosition("Archer", 0)
         actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
-        actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
-        actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
-        actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
+      //  actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
+      //  actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
+      //  actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
     }
 
     inner class ActorPlacer {
@@ -92,7 +92,7 @@ class GameWorld() {
         stage.addActor(actor)
     }
 
-    public fun removeDeadActors() {
+    public fun removeDeadActors() : Int {
         for (i in 0..field.actors.size - 1) {
             val curActor : ActorHex
             try {
@@ -111,13 +111,14 @@ class GameWorld() {
             }
         }
         field.deadActorsExist = false
-        checkVictory()
+        return checkVictory()
     }
 
-    private fun checkVictory() {
+    private fun checkVictory() : Int{
         for (i in players) {
             if (i.actorIndices.isEmpty()) {
                 val playerColor = if (i.playerInd == 0) Color.CYAN else Color.RED
+                return (1 - i.playerInd)
                 var fontPlayerColor = AssetLoader.generateFont("Doux Medium.ttf", 35, playerColor)
                 var labelStyle = Label.LabelStyle(fontPlayerColor, playerColor)
                 var endLabel   = Label("Player ${2 - i.playerInd} wins!", labelStyle)
@@ -126,10 +127,14 @@ class GameWorld() {
                 stage.addActor(endLabel)
             }
         }
+        return -1
     }
 
-    fun update() {
-        if (field.deadActorsExist) removeDeadActors()
+    fun update() : Int {
+        if (field.deadActorsExist) {
+            return removeDeadActors()
+        }
+        return -1
     }
 
     fun dispose() {
