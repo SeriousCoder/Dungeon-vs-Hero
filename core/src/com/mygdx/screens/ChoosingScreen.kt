@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport
 import com.mygdx.Helpers.AssetLoader
 import com.mygdx.game.DvHGame
 
-public class ChoosingScreen(game : DvHGame) : Screen
+public class ChoosingScreen(game : DvHGame, prevLevelScreen: LevelScreen? = null) : Screen
 {
     private val batcher = SpriteBatch()
     private val stage   = Stage(FitViewport(Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat()), batcher)
@@ -23,6 +23,7 @@ public class ChoosingScreen(game : DvHGame) : Screen
 
     init
     {
+        prevLevelScreen?.dispose()
         stage.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true);
         val skin = Skin(Gdx.files.internal("uiskin.json"));
         val single = TextButton("One player", skin, "default")

@@ -46,7 +46,7 @@ class GameRenderer(val gameWorld: GameWorld) {
         stageUI = null
     }
 
-    fun render() {
+    fun render(shouldUpdateGameWorld :Boolean = true) : Int{
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
         polygon.begin()
@@ -93,7 +93,8 @@ class GameRenderer(val gameWorld: GameWorld) {
             gameWorld.players[curPlayer].grabInput()
         }
 
-        gameWorld.update()
+        var winner : Int? = null
+        if (shouldUpdateGameWorld) winner = gameWorld.update()
         gameWorld.stage.draw()
         gameWorld.stage.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true);
 
@@ -102,6 +103,7 @@ class GameRenderer(val gameWorld: GameWorld) {
             uiStageVal.draw()
             uiStageVal.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true);
         }
+        return (winner ?: -1)
     }
 
     fun dispose() {
