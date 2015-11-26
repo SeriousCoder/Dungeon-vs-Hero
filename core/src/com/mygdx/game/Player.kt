@@ -19,7 +19,7 @@ public class Player(private val gameWorld: GameWorld, gameRenderer: GameRenderer
     var actorIndices = arrayListOf<Int>()
     var actorsNum = 0
     init {
-        if (!isAI) inHandler = InputHandler(gameWorld, gameRenderer, skillExec, virtualHeight, virtualWidth, this)
+        inHandler = InputHandler(gameWorld, gameRenderer, skillExec, virtualHeight, virtualWidth, this)
     }
 
     public fun fieldActorIndToPlayerActorInd(ind : Int) : Int {
@@ -47,6 +47,40 @@ public class Player(private val gameWorld: GameWorld, gameRenderer: GameRenderer
     public fun correctActorFieldIndicesAfterDeletion(actorInd: Int) {
         for (i in actorIndices.indices) {
             if (actorIndices[i] > actorInd) actorIndices[i]--
+        }
+    }
+
+    public fun makeTurnAI(enemy : Player)
+    {
+        if (isAI == true)
+        {
+            val enemyActor = enemy.gameWorld.field.actors[0]
+            val enemyX = enemyActor.hex.i
+            val enemyY = enemyActor.hex.j
+
+            for (actor in gameWorld.field.actors)
+            {
+                val ind = gameWorld.field.actors.indexOf(actor)
+
+                val x = actor.hex.i
+                val y = actor.hex.j
+
+                val diffX = Math.abs(enemyX - x)
+                val diffY = Math.abs(enemyY - y)
+
+                if (diffX > diffY)
+                {
+                    if (enemyX > x && (x % 2).toInt() == 0) inHandler.moveActor(ind, x + 1, y)
+                    if (enemyX > x && (x % 2).toInt() == 1) inHandler.moveActor(ind, x + 1, y + 1)
+                    if (enemyX < x && (x % 2).toInt() == 0) inHandler.moveActor(ind, x - 1, y - 1)
+                    if (enemyX < x && (x % 2).toInt() == 1) inHandler.moveActor(ind, x - 1, y)
+                }
+                else
+                {
+                    if (enemyY > y) inHandler.moveActor(ind, x, y + 1)
+                    if (enemyY < y) inHandler.moveActor(ind, x, y - 1)
+                }
+            }
         }
     }
 

@@ -93,6 +93,8 @@ class GameRenderer(val gameWorld: GameWorld) {
             gameWorld.players[curPlayer].grabInput()
         }
 
+        gameWorld.players[curPlayer].makeTurnAI(gameWorld.players[1 - curPlayer])
+
         var winner : Int? = null
         if (shouldUpdateGameWorld) winner = gameWorld.update()
         gameWorld.stage.draw()

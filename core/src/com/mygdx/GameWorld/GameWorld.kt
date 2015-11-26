@@ -38,7 +38,7 @@ class GameWorld() {
     //I need this function, 'cause otherwise there's GameRenderer in GameWorld constructor and vice versa
     public fun initPlayersAndEverythingNeedingThem(renderer: GameRenderer) {
         players = listOf(Player(this, renderer, 0, SkillExecutor(this, 0), virtualHeight, virtualWidth),
-                Player(this, renderer, 1, SkillExecutor(this, 1), virtualHeight, virtualWidth))
+                Player(this, renderer, 1, SkillExecutor(this, 1), virtualHeight, virtualWidth, true))
         Gdx.input.inputProcessor = players[0].inHandler
 
         val actorPlacer = ActorPlacer()

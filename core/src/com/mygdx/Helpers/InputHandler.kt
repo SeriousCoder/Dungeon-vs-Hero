@@ -197,7 +197,7 @@ class InputHandler (private val gameWorld: GameWorld,
         gameRenderer.enableDrawingUI(stageUI)
     }
 
-    private fun moveActor(actInd : Int, iInd : Int, jInd : Int) {
+    public fun moveActor(actInd : Int, iInd : Int, jInd : Int) {
         val moveCost = 1
         val movingActor = field.actors[actInd]
         if (movingActor.curActionPoints >= moveCost) {
