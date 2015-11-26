@@ -60,6 +60,8 @@ public class Player(private val gameWorld: GameWorld, gameRenderer: GameRenderer
 
             for (actor in gameWorld.field.actors)
             {
+                if (actor.owner != 1) continue
+
                 val ind = gameWorld.field.actors.indexOf(actor)
 
                 val x = actor.hex.i
@@ -68,6 +70,8 @@ public class Player(private val gameWorld: GameWorld, gameRenderer: GameRenderer
                 val diffX = Math.abs(enemyX - x)
                 val diffY = Math.abs(enemyY - y)
 
+                if ((diffX == 0 && diffY == 1) || (diffX == 1 && diffY == 0) || (diffX == 1 && diffY == 1))
+                    inHandler.tryToUseSkill(actor, enemyX, enemyY, "Stab");
                 if (diffX > diffY)
                 {
                     if (enemyX > x && (x % 2).toInt() == 0) inHandler.moveActor(ind, x + 1, y)
