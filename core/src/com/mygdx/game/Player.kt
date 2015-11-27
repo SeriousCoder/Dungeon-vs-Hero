@@ -52,7 +52,7 @@ public class Player(private val gameWorld: GameWorld, gameRenderer: GameRenderer
 
     public fun makeTurnAI(enemy : Player)
     {
-        if (isAI == true)
+        if (isAI)
         {
             val enemyActor = enemy.gameWorld.field.actors[0]
             val enemyX = enemyActor.hex.i

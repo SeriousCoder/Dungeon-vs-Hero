@@ -44,9 +44,9 @@ class GameWorld() {
         val actorPlacer = ActorPlacer()
         actorPlacer.addActorAtRandomPosition("Archer", 0)
         actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
-      //  actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
-      //  actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
-      //  actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
+        actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
+        actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
+        actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
     }
 
     inner class ActorPlacer {
