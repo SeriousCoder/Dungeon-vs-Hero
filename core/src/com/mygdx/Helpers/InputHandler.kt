@@ -169,19 +169,6 @@ class InputHandler (private val gameWorld: GameWorld,
         return false
     }
 
-    public  fun tryToUseSkill(source : ActorHex, i : Int, j : Int, skillName: String) : Boolean {
-        if (skillExec.useSkill(skillName, source.hex.i, source.hex.j, i, j)) {
-                field.deadActorsExist = true
-
-                updateActionPoints(source)
-                cleanUpAfterUsingSkill()
-                actorsActionPoints.isVisible = false
-                field.deactivateActorsExcept(-1)
-                return true
-        }
-        return false
-    }
-
     private fun checkIfNoAP() : Boolean{
         var sum = 0
         for (i in player.actorIndices)

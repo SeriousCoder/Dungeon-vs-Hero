@@ -19,7 +19,8 @@ public class Player(private val gameWorld: GameWorld, gameRenderer: GameRenderer
     var actorIndices = arrayListOf<Int>()
     var actorsNum = 0
     init {
-        inHandler = InputHandler(gameWorld, gameRenderer, skillExec, virtualHeight, virtualWidth, this)
+        if (!isAI)
+            inHandler = InputHandler(gameWorld, gameRenderer, skillExec, virtualHeight, virtualWidth, this)
     }
 
     public fun fieldActorIndToPlayerActorInd(ind : Int) : Int {
@@ -27,17 +28,18 @@ public class Player(private val gameWorld: GameWorld, gameRenderer: GameRenderer
     }
 
     public fun grabInput() {
-        Gdx.input.inputProcessor = inHandler
+        if (!isAI) Gdx.input.inputProcessor = inHandler
+        //TODO: that's where I stopped
     }
 
     public fun addActorInd(actorInd : Int) {
         actorIndices.add(actorInd)
-        inHandler.addNewActorSkills()
+        if (!isAI) inHandler.addNewActorSkills()
         actorsNum++
     }
 
     public fun delActorInd(actorInd : Int) {
-        inHandler.actorsSkillsBtns.removeAt(fieldActorIndToPlayerActorInd(actorInd))
+        if (!isAI) inHandler.actorsSkillsBtns.removeAt(fieldActorIndToPlayerActorInd(actorInd))
         actorIndices.remove(actorInd)
     //    inHandler.removeActorSkills()
         actorsNum--
@@ -50,45 +52,61 @@ public class Player(private val gameWorld: GameWorld, gameRenderer: GameRenderer
         }
     }
 
-    public fun makeTurnAI(enemy : Player)
-    {
-        if (isAI)
-        {
-            val enemyActor = enemy.gameWorld.field.actors[0]
+    public fun makeTurnAI(enemy : Player) : Boolean {
+        for (enemyActorInd in enemy.actorIndices) {
+            val enemyActor = gameWorld.field.actors[enemyActorInd]
             val enemyX = enemyActor.hex.i
             val enemyY = enemyActor.hex.j
 
-            for (actor in gameWorld.field.actors)
-            {
-                if (actor.owner != 1) continue
-
-                val ind = gameWorld.field.actors.indexOf(actor)
-
+            for (actorInd in actorIndices) {
+                val actor = gameWorld.field.actors[actorInd]
                 val x = actor.hex.i
                 val y = actor.hex.j
 
                 val diffX = Math.abs(enemyX - x)
                 val diffY = Math.abs(enemyY - y)
 
-                if ((diffX == 0 && diffY == 1) || (diffX == 1 && diffY == 0) || (diffX == 1 && diffY == 1))
-                    inHandler.tryToUseSkill(actor, enemyX, enemyY, "Stab");
-                if (diffX > diffY)
-                {
-                    if (enemyX > x && (x % 2).toInt() == 0) inHandler.moveActor(ind, x + 1, y)
-                    if (enemyX > x && (x % 2).toInt() == 1) inHandler.moveActor(ind, x + 1, y + 1)
-                    if (enemyX < x && (x % 2).toInt() == 0) inHandler.moveActor(ind, x - 1, y - 1)
-                    if (enemyX < x && (x % 2).toInt() == 1) inHandler.moveActor(ind, x - 1, y)
+                if ((diffX == 0 && diffY == 1) || (diffX == 1 && diffY == 0) || (diffX == 1 && diffY == 1)) {
+                    tryToUseSkill(actor, enemyX, enemyY, "Stab");
+                    continue
                 }
-                else
-                {
-                    if (enemyY > y) inHandler.moveActor(ind, x, y + 1)
-                    if (enemyY < y) inHandler.moveActor(ind, x, y - 1)
+                if (diffX > diffY) {
+                    if (enemyX > x && (x % 2).toInt() == 0) moveActor(actorInd, x + 1, y)// return moveActor(actorInd, x + 1, y)
+                    if (enemyX > x && (x % 2).toInt() == 1) moveActor(actorInd, x + 1, y + 1)//return moveActor(actorInd, x + 1, y + 1)
+                    if (enemyX < x && (x % 2).toInt() == 0) moveActor(actorInd, x - 1, y - 1)//return moveActor(actorInd, x - 1, y - 1)
+                    if (enemyX < x && (x % 2).toInt() == 1) moveActor(actorInd, x - 1, y)//return moveActor(actorInd, x - 1, y)
+                } else {
+                    if (enemyY > y) moveActor(actorInd, x, y + 1)//return moveActor(actorInd, x, y + 1)
+                    if (enemyY < y) moveActor(actorInd, x, y - 1)//return moveActor(actorInd, x, y - 1)
                 }
             }
         }
+        return true
+    }
+
+    public fun tryToUseSkill(source : ActorHex, i : Int, j : Int, skillName: String) : Boolean {
+        var res = false
+        if (skillExec.useSkill(skillName, source.hex.i, source.hex.j, i, j)) {
+            gameWorld.field.deadActorsExist = true
+            source.skillHaveBeenUsed(skillName)
+            if (checkIfNoAP()) {
+                res = true
+                restoreActionPoints()
+            }
+        }
+        return res
+    }
+
+    private fun checkIfNoAP() : Boolean{
+        var sum = 0
+        for (i in actorIndices)
+            sum += gameWorld.field.actors[i].curActionPoints
+        return sum == 0
     }
 
     public fun getInput() : Boolean {
+        if (isAI)
+            return makeTurnAI(gameWorld.players[1 - playerInd])
         if (inHandler.dataHasBeenGot) {
             inHandler.dataHasBeenGot = false
             return true
@@ -101,5 +119,19 @@ public class Player(private val gameWorld: GameWorld, gameRenderer: GameRenderer
             val actor = gameWorld.field.actors[i]
             actor.curActionPoints = actor.maxActionPoints
         }
+    }
+
+    public fun moveActor(actInd : Int, iInd : Int, jInd : Int) : Boolean {
+        val moveCost = 1
+        val movingActor = gameWorld.field.actors[actInd]
+        if (movingActor.curActionPoints >= moveCost) {
+            gameWorld.field.moveActor(actInd, gameWorld.field.field[iInd][jInd])
+            movingActor.curActionPoints--
+            if (checkIfNoAP()) {
+                restoreActionPoints()
+                return true
+            }
+        }
+        return false
     }
 }
