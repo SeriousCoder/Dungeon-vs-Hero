@@ -73,11 +73,14 @@ class GameWorld() {
       stage.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true);
 
       for (i in 0..1) {
-          val playerColor = if (i ==0) Color.RED else Color.CYAN
+          val playerColor = if (i == 0) Color.CHARTREUSE else Color.RED
           var fontPlayerColor = AssetLoader.generateFont("Doux Medium.ttf", 25, playerColor)
           var labelStyle = Label.LabelStyle(fontPlayerColor, playerColor)
-          var turnLabel   = Label("Turn of player $i", labelStyle)
-          turnLabel.x = virtualWidth - 180
+          var text =
+            if (i == 0) "Turn of Hero"
+            else "Turn of Dungeon"
+          var turnLabel   = Label(text, labelStyle)
+          turnLabel.x = virtualWidth - 200 + 50 * (1 - i)//text for hero is shorter => should have lesser `x`
           turnLabel.y = virtualHeight - 30
           turnLabel.isVisible = i == 0
           playerTurnLabels.add(turnLabel)
@@ -116,16 +119,7 @@ class GameWorld() {
 
     private fun checkVictory() : Int{
         for (i in players) {
-            if (i.actorIndices.isEmpty()) {
-                val playerColor = if (i.playerInd == 0) Color.CYAN else Color.RED
-                return (1 - i.playerInd)
-                var fontPlayerColor = AssetLoader.generateFont("Doux Medium.ttf", 35, playerColor)
-                var labelStyle = Label.LabelStyle(fontPlayerColor, playerColor)
-                var endLabel   = Label("Player ${2 - i.playerInd} wins!", labelStyle)
-                endLabel.x = virtualWidth/2 - 80
-                endLabel.y = virtualHeight/2
-                stage.addActor(endLabel)
-            }
+            if (i.actorIndices.isEmpty()) return (1 - i.playerInd)
         }
         return -1
     }
@@ -139,6 +133,5 @@ class GameWorld() {
 
     fun dispose() {
         stage.dispose()
-        batch.dispose()
     }
 }
