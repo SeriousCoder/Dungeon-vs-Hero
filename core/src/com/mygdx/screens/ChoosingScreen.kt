@@ -100,7 +100,7 @@ public class ChoosingScreen(game : DvHGame, prevLevelScreen: LevelScreen? = null
     }
 
     override fun dispose() {
-      //  Gdx.app.log("Screen", "disposed")
+          stage.dispose()
     }
 
     override fun show() {

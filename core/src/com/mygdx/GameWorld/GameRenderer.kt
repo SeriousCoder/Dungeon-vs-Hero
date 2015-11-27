@@ -107,7 +107,9 @@ class GameRenderer(val gameWorld: GameWorld) {
     }
 
     fun dispose() {
-        //hex.dispose()
+        polygon.dispose()
+        field.dispose()
+        stageUI?.dispose()
     }
 
 }

@@ -166,7 +166,8 @@ public class HexField() {
         return res
     }
 
-    public fun moveActor(actInd : Int, hex : HexForLogic) {
+    public fun moveActor(actInd : Int, hex : HexForLogic) : Boolean {
+        if (hex.occupied) return false
         actors[actInd].hex.occupied = false
         actors[actInd].hex.deactivate()
         actors[actInd].hex = hex
@@ -174,6 +175,7 @@ public class HexField() {
         actors[actInd].actorX = hex.xl + 6
         actors[actInd].actorY = hex.yl + 4
         actors[actInd].activated = false
+        return true
     }
 
     public fun findActorIndInField(actor : ActorHex) : Int? {
@@ -184,5 +186,10 @@ public class HexField() {
 
     fun deactivateActorsExcept(doNotDeactivateInd : Int) {
         for (i in 0..actors.size - 1) if (i != doNotDeactivateInd) actors[i].deactivate()
+    }
+
+    fun dispose() {
+//        field.dispose()
+//        actors.dispose()
     }
 }

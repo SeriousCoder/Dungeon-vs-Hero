@@ -101,6 +101,8 @@ class InputHandler (private val gameWorld: GameWorld,
             val style  = ImageButton.ImageButtonStyle()
             style.up   = buttonSkin.getDrawable(skillPicsPair.first)
             style.down = buttonSkin.getDrawable(skillPicsPair.second)
+            style.checked  = style.down
+            style.checkedOver = style.up
 
             val button    = ImageButton(style)
             button.width  = 70f

@@ -90,7 +90,7 @@ public class MainScreen(val game : DvHGame) : Screen
     }
 
     override fun dispose() {
-     //   Gdx.app.log("Screen", "disposed")
+         stage.dispose()
     }
 
     override fun show() {

@@ -26,8 +26,8 @@ open public class HexPolygon(private val r : Float, mode : String?) : HexForPoly
     init {
         when (mode) {
             null -> texture = Texture("Data/Images/tile.png")
-            "p0" -> texture = Texture("Data/Images/red.png")
-            "p1" -> texture = Texture("Data/Images/blue.png")
+            "p1" -> texture = Texture("Data/Images/red.png")
+            "p0" -> texture = Texture("Data/Images/blue.png")
             "lit" -> texture = Texture("Data/Images/light.png")
         }
     }

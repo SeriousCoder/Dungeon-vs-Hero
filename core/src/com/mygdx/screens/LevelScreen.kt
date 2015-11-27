@@ -32,18 +32,16 @@ public class LevelScreen(val game : DvHGame) : Screen
     }
 
     override fun render(delta: Float) {
-        if (gameIsEnded) {
-            renderAfterEndOfGame()
-            return
-        }
-
-        val winner = renderer.render()
+        val winner = renderer.render(!gameIsEnded)
         if (winner != -1) {
             //game.screen = EndGameScreen(winner, this, game)
             gameIsEnded = true
 
             val skin = Skin(Gdx.files.internal("uiskin.json"));
-            val restart = TextButton("Player ${1 + winner} wins!", skin, "default")
+            var text : String? = null
+            if (winner == 0) text = "Hero wins!"
+            else text = "Dungeon wins!"
+            val restart = TextButton(text, skin, "default")
 
             val width = 250f
             val height = 70f
@@ -57,27 +55,18 @@ public class LevelScreen(val game : DvHGame) : Screen
                 }
             })
 
-            val screenHeight = Gdx.graphics.height.toFloat()
-            val screenWidth = Gdx.graphics.width.toFloat()
+            val screenHeight = Gdx.graphics.height
+            val screenWidth = Gdx.graphics.width
 
             restart.setPosition((screenWidth - width) / 2, screenHeight/ 2 - height /2)
 
-//            for (i in AssetLoader.gameWorld.stage.actors)
-//                i.clearListeners()
             AssetLoader.gameWorld.stage.addActor(restart)
             Gdx.input.inputProcessor = AssetLoader.gameWorld.stage
         }
     }
 
-    private fun renderAfterEndOfGame() {
-        renderer.render(false)
-//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-//        AssetLoader.gameWorld.stage.draw()
-    }
-
     override fun dispose() {
         renderer.dispose()
-
         AssetLoader.gameWorld.dispose()
     }
 
