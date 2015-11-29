@@ -41,7 +41,7 @@ public class ChoosingScreen(game : DvHGame, prevLevelScreen: LevelScreen? = null
         single.addListener(object : ClickListener()
         {
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                game.screen = LevelScreen(game)
+                game.screen = LevelScreen(game, true)
             }
         })
 

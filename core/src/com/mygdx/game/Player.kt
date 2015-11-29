@@ -70,14 +70,15 @@ public class Player(private val gameWorld: GameWorld, gameRenderer: GameRenderer
                     tryToUseSkill(actor, enemyX, enemyY, "Stab");
                     continue
                 }
-                if (diffX > diffY) {
-                    if (enemyX > x && (x % 2).toInt() == 0) moveActor(actorInd, x + 1, y)// return moveActor(actorInd, x + 1, y)
-                    if (enemyX > x && (x % 2).toInt() == 1) moveActor(actorInd, x + 1, y + 1)//return moveActor(actorInd, x + 1, y + 1)
-                    if (enemyX < x && (x % 2).toInt() == 0) moveActor(actorInd, x - 1, y - 1)//return moveActor(actorInd, x - 1, y - 1)
+                if (diffX < diffY) {
+                    if (enemyX > x && (x % 2).toInt() == 0) moveActor(actorInd, x + 1, y) // return moveActor(actorInd, x + 1, y)
+                    if (enemyX > x && (x % 2).toInt() == 1) moveActor(actorInd, x + 1, y + 1) //return moveActor(actorInd, x + 1, y + 1)
+                    if (enemyX < x && (x % 2).toInt() == 0) moveActor(actorInd, x - 1, y - 1) //return moveActor(actorInd, x - 1, y - 1)
                     if (enemyX < x && (x % 2).toInt() == 1) moveActor(actorInd, x - 1, y)//return moveActor(actorInd, x - 1, y)
-                } else {
+                }
+                else {
                     if (enemyY > y) moveActor(actorInd, x, y + 1)//return moveActor(actorInd, x, y + 1)
-                    if (enemyY < y) moveActor(actorInd, x, y - 1)//return moveActor(actorInd, x, y - 1)
+                    if (enemyY <= y) moveActor(actorInd, x, y - 1)//return moveActor(actorInd, x, y - 1)
                 }
             }
         }

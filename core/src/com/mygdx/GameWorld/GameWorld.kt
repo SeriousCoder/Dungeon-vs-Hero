@@ -36,17 +36,23 @@ class GameWorld() {
     val playerTurnLabels = arrayListOf<Label>()
 
     //I need this function, 'cause otherwise there's GameRenderer in GameWorld constructor and vice versa
-    public fun initPlayersAndEverythingNeedingThem(renderer: GameRenderer) {
+    public fun initPlayersAndEverythingNeedingThem(renderer: GameRenderer, ai : Boolean = false) {
         players = listOf(Player(this, renderer, 0, SkillExecutor(this, 0), virtualHeight, virtualWidth),
-                Player(this, renderer, 1, SkillExecutor(this, 1), virtualHeight, virtualWidth, true))
+                Player(this, renderer, 1, SkillExecutor(this, 1), virtualHeight, virtualWidth, ai))
         Gdx.input.inputProcessor = players[0].inHandler
 
         val actorPlacer = ActorPlacer()
         actorPlacer.addActorAtRandomPosition("Archer", 0)
         actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
-        actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
-        actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
-        actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
+//        actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
+//        actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
+//        actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
+//        actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
+//        actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
+//
+//        actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
+//        actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
+//        actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
     }
 
     inner class ActorPlacer {

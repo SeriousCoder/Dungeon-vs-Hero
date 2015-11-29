@@ -16,7 +16,7 @@ import com.mygdx.game.GameWorld.GameWorld
 import kotlin.properties.Delegates
 
 
-public class LevelScreen(val game : DvHGame) : Screen
+public class LevelScreen(val game : DvHGame, ai : Boolean = false) : Screen
 {
     private var renderer : GameRenderer by Delegates.notNull<GameRenderer>()
     private var gameIsEnded = false
@@ -24,7 +24,7 @@ public class LevelScreen(val game : DvHGame) : Screen
         AssetLoader.gameWorld = GameWorld()
         renderer = GameRenderer(AssetLoader.gameWorld)
         //without calling function below everything will go to hell crashing
-        AssetLoader.gameWorld.initPlayersAndEverythingNeedingThem(renderer)
+        AssetLoader.gameWorld.initPlayersAndEverythingNeedingThem(renderer, ai)
     }
 
     private fun getThisScreen() : LevelScreen {
