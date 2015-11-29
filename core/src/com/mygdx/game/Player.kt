@@ -7,6 +7,7 @@ import com.mygdx.GameObjects.ActorHex
 import com.mygdx.Helpers.SkillExecutor
 import com.mygdx.GameWorld.GameRenderer
 import com.mygdx.GameWorld.GameWorld
+import java.util.*
 import kotlin.properties.Delegates
 
 public class Player(private val gameWorld: GameWorld, gameRenderer: GameRenderer,
@@ -53,10 +54,22 @@ public class Player(private val gameWorld: GameWorld, gameRenderer: GameRenderer
     }
 
     public fun makeTurnAI(enemy : Player) : Boolean {
-        for (enemyActorInd in enemy.actorIndices) {
+        for (enemyActorInd in enemy.actorIndices)
+        {
             val enemyActor = gameWorld.field.actors[enemyActorInd]
             val enemyX = enemyActor.hex.i
             val enemyY = enemyActor.hex.j
+
+            class compClass : Comparator<Pair<Int, Int>>
+            {
+                fun distance (pair : Pair<Int, Int>) : Double = Math.sqrt(((enemyX - pair.first) * (enemyX - pair.first) +
+                        (enemyY - pair.second) * (enemyY - pair.second).toDouble()))
+
+                override fun compare(o1: Pair<Int, Int>, o2: Pair<Int, Int>): Int
+                {
+                    return distance(o1).compareTo(distance(o2))
+                }
+            }
 
             for (actorInd in actorIndices) {
                 val actor = gameWorld.field.actors[actorInd]
@@ -67,20 +80,38 @@ public class Player(private val gameWorld: GameWorld, gameRenderer: GameRenderer
                 val diffY = Math.abs(enemyY - y)
 
                 if ((diffX == 0 && diffY == 1) || (diffX == 1 && diffY == 0) ||
-                        (diffX == 1 && diffY == 1 && (x % 2).toInt() == 0 && (enemyY > y)) ||
-                        (diffX == 1 && diffY == 1 && (x % 2).toInt() == 1 && (enemyY < y))) {
+                        (diffX == 1 && diffY == 1 && x % 2 == 0 && (enemyY > y)) ||
+                        (diffX == 1 && diffY == 1 && x % 2 == 1 && (enemyY < y))) {
                     tryToUseSkill(actor, enemyX, enemyY, "Stab");
                     continue
                 }
-                if (diffX < diffY) {
-                    if (enemyX > x && (x % 2).toInt() == 0) moveActor(actorInd, x + 1, y) // return moveActor(actorInd, x + 1, y)
-                    if (enemyX > x && (x % 2).toInt() == 1) moveActor(actorInd, x + 1, y + 1) //return moveActor(actorInd, x + 1, y + 1)
-                    if (enemyX < x && (x % 2).toInt() == 0) moveActor(actorInd, x - 1, y - 1) //return moveActor(actorInd, x - 1, y - 1)
-                    if (enemyX < x && (x % 2).toInt() == 1) moveActor(actorInd, x - 1, y)//return moveActor(actorInd, x - 1, y)
+
+                var listMoves : ArrayList<Pair<Int, Int>> = arrayListOf()
+
+                if (x != 0) listMoves.add(Pair(x - 1, y))
+                if (x != 8) listMoves.add(Pair(x + 1, y))
+                if (y != 0) listMoves.add(Pair(x, y - 1))
+                if (y != 10) listMoves.add(Pair(x, y + 1))
+
+                if (x % 2 == 0 && y != 0)
+                {
+                    if (x != 0) listMoves.add(Pair(x - 1, y - 1))
+                    if (x != 8) listMoves.add(Pair(x + 1, y - 1))
                 }
-                else {
-                    if (enemyY > y) moveActor(actorInd, x, y + 1)//return moveActor(actorInd, x, y + 1)
-                    if (enemyY <= y) moveActor(actorInd, x, y - 1)//return moveActor(actorInd, x, y - 1)
+                else if (y != 10)
+                {
+                    listMoves.add(Pair(x - 1, y + 1))
+                    listMoves.add(Pair(x + 1, y + 1))
+                }
+
+                listMoves.sort(compClass())
+
+                var ind = 0
+
+                while (ind < listMoves.count())
+                {
+                    if (moveActor(actorInd, listMoves[ind].first, listMoves[ind].second)) break
+                    ind++
                 }
             }
         }
@@ -128,7 +159,7 @@ public class Player(private val gameWorld: GameWorld, gameRenderer: GameRenderer
         val moveCost = 1
         val movingActor = gameWorld.field.actors[actInd]
         if (movingActor.curActionPoints >= moveCost) {
-            gameWorld.field.moveActor(actInd, gameWorld.field.field[iInd][jInd])
+            if (!gameWorld.field.moveActor(actInd, gameWorld.field.field[iInd][jInd])) return false
             movingActor.curActionPoints--
             if (checkIfNoAP()) {
                 restoreActionPoints()

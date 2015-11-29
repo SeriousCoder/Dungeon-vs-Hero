@@ -20,11 +20,11 @@ public class LevelScreen(val game : DvHGame, ai : Boolean = false) : Screen
 {
     private var renderer : GameRenderer by Delegates.notNull<GameRenderer>()
     private var gameIsEnded = false
+    private val gameWorld = GameWorld()
     init {
-        AssetLoader.gameWorld = GameWorld()
-        renderer = GameRenderer(AssetLoader.gameWorld)
+        renderer = GameRenderer(gameWorld)
         //without calling function below everything will go to hell crashing
-        AssetLoader.gameWorld.initPlayersAndEverythingNeedingThem(renderer, ai)
+        gameWorld.initPlayersAndEverythingNeedingThem(renderer, ai)
     }
 
     private fun getThisScreen() : LevelScreen {
@@ -60,14 +60,14 @@ public class LevelScreen(val game : DvHGame, ai : Boolean = false) : Screen
 
             restart.setPosition((screenWidth - width) / 2, screenHeight/ 2 - height /2)
 
-            AssetLoader.gameWorld.stage.addActor(restart)
-            Gdx.input.inputProcessor = AssetLoader.gameWorld.stage
+            gameWorld.stage.addActor(restart)
+            Gdx.input.inputProcessor = gameWorld.stage
         }
     }
 
     override fun dispose() {
         renderer.dispose()
-        AssetLoader.gameWorld.dispose()
+        gameWorld.dispose()
     }
 
     override fun show() {}
