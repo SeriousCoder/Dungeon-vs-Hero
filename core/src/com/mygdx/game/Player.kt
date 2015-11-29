@@ -66,7 +66,9 @@ public class Player(private val gameWorld: GameWorld, gameRenderer: GameRenderer
                 val diffX = Math.abs(enemyX - x)
                 val diffY = Math.abs(enemyY - y)
 
-                if ((diffX == 0 && diffY == 1) || (diffX == 1 && diffY == 0) || (diffX == 1 && diffY == 1)) {
+                if ((diffX == 0 && diffY == 1) || (diffX == 1 && diffY == 0) ||
+                        (diffX == 1 && diffY == 1 && (x % 2).toInt() == 0 && (enemyY > y)) ||
+                        (diffX == 1 && diffY == 1 && (x % 2).toInt() == 1 && (enemyY < y))) {
                     tryToUseSkill(actor, enemyX, enemyY, "Stab");
                     continue
                 }
