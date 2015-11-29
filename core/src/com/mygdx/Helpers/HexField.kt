@@ -1,29 +1,7 @@
-package com.mygdx.game.Helpers
+package com.mygdx.Helpers
 
 import com.mygdx.GameObjects.ActorHex
 import java.util.*
-
-public class HexForLogic(val x : Float, val y : Float, val R: Float, val i : Int, val j : Int) {
-    public val r  = R * Math.sqrt(3.0) / 2
-    public val xl = x - R
-    public val yl = (y - r).toFloat()//R * Math.sqrt(3.0) / 2
-
-    public var occupied = false
-    public var isActorHereDead = false
-
-    public var lit = false
-
-    public var activated = false
-    public fun changeActivation() {
-        activated = !activated
-    }
-    public fun activate() {
-        activated = true
-    }
-    public fun deactivate() {
-        activated = false
-    }
-}
 
 public class HexField() {
     public val height = 11

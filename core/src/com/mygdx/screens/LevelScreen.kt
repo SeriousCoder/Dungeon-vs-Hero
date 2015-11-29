@@ -11,8 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.mygdx.Helpers.AssetLoader
 import com.mygdx.game.DvHGame
-import com.mygdx.game.GameWorld.GameRenderer
-import com.mygdx.game.GameWorld.GameWorld
+import com.mygdx.GameWorld.GameRenderer
+import com.mygdx.GameWorld.GameWorld
 import kotlin.properties.Delegates
 
 

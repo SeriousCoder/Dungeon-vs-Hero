@@ -1,12 +1,12 @@
 package com.mygdx.game
 
 import com.badlogic.gdx.Gdx
-import com.mygdx.game.Helpers.HexField
-import com.mygdx.game.Helpers.InputHandler
+import com.mygdx.Helpers.HexField
+import com.mygdx.Helpers.InputHandler
 import com.mygdx.GameObjects.ActorHex
 import com.mygdx.Helpers.SkillExecutor
-import com.mygdx.game.GameWorld.GameRenderer
-import com.mygdx.game.GameWorld.GameWorld
+import com.mygdx.GameWorld.GameRenderer
+import com.mygdx.GameWorld.GameWorld
 import kotlin.properties.Delegates
 
 public class Player(private val gameWorld: GameWorld, gameRenderer: GameRenderer,

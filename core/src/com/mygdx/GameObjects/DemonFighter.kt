@@ -3,7 +3,7 @@ package com.mygdx.GameObjects
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
-import com.mygdx.game.Helpers.HexForLogic
+import com.mygdx.Helpers.HexForLogic
 
 /**
  * Created by Alexander on 11.11.2015.

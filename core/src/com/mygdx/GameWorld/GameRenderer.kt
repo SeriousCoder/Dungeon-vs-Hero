@@ -1,4 +1,4 @@
-package com.mygdx.game.GameWorld
+package com.mygdx.GameWorld
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.mygdx.game.Helpers.*
+import com.mygdx.Helpers.*
 import java.util.*
 import kotlin.properties.Delegates
 

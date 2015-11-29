@@ -1,7 +1,7 @@
 package com.mygdx.GameObjects
 
 import com.badlogic.gdx.scenes.scene2d.Actor
-import com.mygdx.game.Helpers.HexForLogic
+import com.mygdx.Helpers.HexForLogic
 import java.util.*
 
 public abstract class ActorHex(var hex : HexForLogic, val owner : Int) : Actor() {
