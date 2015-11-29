@@ -54,17 +54,19 @@ public class Player(private val gameWorld: GameWorld, gameRenderer: GameRenderer
     }
 
     public fun makeTurnAI(enemy : Player) : Boolean {
-        for (enemyActorInd in enemy.actorIndices) {
+        for (enemyActorInd in enemy.actorIndices)
+        {
             val enemyActor = gameWorld.field.actors[enemyActorInd]
             val enemyX = enemyActor.hex.i
             val enemyY = enemyActor.hex.j
 
-            fun distance (pair : Pair<Int, Int>) : Double = Math.sqrt(((enemyX - pair.first) * (enemyX - pair.first) +
-                    (enemyY - pair.second) * (enemyY - pair.second).toDouble()))
-
             class compClass : Comparator<Pair<Int, Int>>
             {
-                override fun compare(o1: Pair<Int, Int>, o2: Pair<Int, Int>): Int {
+                fun distance (pair : Pair<Int, Int>) : Double = Math.sqrt(((enemyX - pair.first) * (enemyX - pair.first) +
+                        (enemyY - pair.second) * (enemyY - pair.second).toDouble()))
+
+                override fun compare(o1: Pair<Int, Int>, o2: Pair<Int, Int>): Int
+                {
                     return distance(o1).compareTo(distance(o2))
                 }
             }
@@ -102,8 +104,7 @@ public class Player(private val gameWorld: GameWorld, gameRenderer: GameRenderer
                     listMoves.add(Pair(x + 1, y + 1))
                 }
 
-                val comp : compClass = compClass()
-                listMoves.sort(comp)
+                listMoves.sort(compClass())
 
                 var ind = 0
 
