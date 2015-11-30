@@ -16,7 +16,7 @@ import com.mygdx.GameWorld.GameWorld
 import kotlin.properties.Delegates
 
 
-public class LevelScreen(val game : DvHGame, ai : Boolean = false) : Screen
+public class LevelScreen(val choosingScreen : ChoosingScreen, val game : DvHGame, ai : Boolean = false) : Screen
 {
     private var renderer : GameRenderer by Delegates.notNull<GameRenderer>()
     private var gameIsEnded = false
@@ -51,7 +51,7 @@ public class LevelScreen(val game : DvHGame, ai : Boolean = false) : Screen
             restart.addListener(object : ClickListener()
             {
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                    game.screen = ChoosingScreen(game, getThisScreen())
+                    choosingScreen.regainControl(getThisScreen())
                 }
             })
 
