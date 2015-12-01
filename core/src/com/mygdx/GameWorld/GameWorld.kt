@@ -1,4 +1,4 @@
-package com.mygdx.game.GameWorld
+package com.mygdx.GameWorld
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
@@ -15,9 +15,9 @@ import com.mygdx.GameObjects.ActorHex
 import com.mygdx.GameObjects.DemonFighter
 import com.mygdx.Helpers.AssetLoader
 import com.mygdx.Helpers.SkillExecutor
-import com.mygdx.game.gameObjects.Archer
-import com.mygdx.game.Helpers.InputHandler
-import com.mygdx.game.Helpers.HexField
+import com.mygdx.GameObjects.Archer
+import com.mygdx.Helpers.InputHandler
+import com.mygdx.Helpers.HexField
 import com.mygdx.game.Player
 import java.util.*
 import kotlin.properties.Delegates
@@ -36,14 +36,20 @@ class GameWorld() {
     val playerTurnLabels = arrayListOf<Label>()
 
     //I need this function, 'cause otherwise there's GameRenderer in GameWorld constructor and vice versa
-    public fun initPlayersAndEverythingNeedingThem(renderer: GameRenderer) {
+    public fun initPlayersAndEverythingNeedingThem(renderer: GameRenderer, ai : Boolean = false) {
         players = listOf(Player(this, renderer, 0, SkillExecutor(this, 0), virtualHeight, virtualWidth),
-                Player(this, renderer, 1, SkillExecutor(this, 1), virtualHeight, virtualWidth, true))
+                Player(this, renderer, 1, SkillExecutor(this, 1), virtualHeight, virtualWidth, ai))
         Gdx.input.inputProcessor = players[0].inHandler
 
         val actorPlacer = ActorPlacer()
         actorPlacer.addActorAtRandomPosition("Archer", 0)
         actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
+        actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
+        actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
+        actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
+        actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
+        actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
+
         actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
         actorPlacer.addActorAtRandomPosition("DemonFighter", 1)
         actorPlacer.addActorAtRandomPosition("DemonFighter", 1)

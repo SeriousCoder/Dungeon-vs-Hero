@@ -1,4 +1,4 @@
-package com.mygdx.game.Helpers
+package com.mygdx.Helpers
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputProcessor
@@ -12,8 +12,9 @@ import com.badlogic.gdx.utils.viewport.FitViewport
 import com.mygdx.GameObjects.ActorHex
 import com.mygdx.Helpers.AssetLoader
 import com.mygdx.Helpers.SkillExecutor
-import com.mygdx.game.GameWorld.GameRenderer
-import com.mygdx.game.GameWorld.GameWorld
+import com.mygdx.Helpers.HexField
+import com.mygdx.GameWorld.GameRenderer
+import com.mygdx.GameWorld.GameWorld
 import com.mygdx.game.Player
 import java.util.*
 import kotlin.properties.Delegates
@@ -23,7 +24,7 @@ class InputHandler (private val gameWorld: GameWorld,
                     private val skillExec : SkillExecutor,
                     private val virtualHeight : Float, private val virtualWidth : Float,
                     private val player: Player) : InputProcessor {
-    private val field = gameWorld.field
+    private val field : HexField = gameWorld.field
     private var stageUI    : Stage by Delegates.notNull<Stage>()
     private var curSkill   : SkillBeingUsedData? = null
     var actorsActionPoints : Label by Delegates.notNull<Label>()
@@ -91,7 +92,7 @@ class InputHandler (private val gameWorld: GameWorld,
         val newActorInd = player.actorIndices[player.actorsNum]
         val tempAr      = arrayListOf<ImageButton>()
 
-        val curActor = field.actors[newActorInd]
+        val curActor : ActorHex = field.actors[newActorInd]
 
         for (j in 0..curActor.skills.size - 1) {
             val skillName     = curActor.skills[j].first
@@ -101,8 +102,6 @@ class InputHandler (private val gameWorld: GameWorld,
             val style  = ImageButton.ImageButtonStyle()
             style.up   = buttonSkin.getDrawable(skillPicsPair.first)
             style.down = buttonSkin.getDrawable(skillPicsPair.second)
-            style.checked  = style.down
-            style.checkedOver = style.up
 
             val button    = ImageButton(style)
             button.width  = 70f

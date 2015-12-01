@@ -11,20 +11,20 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.mygdx.Helpers.AssetLoader
 import com.mygdx.game.DvHGame
-import com.mygdx.game.GameWorld.GameRenderer
-import com.mygdx.game.GameWorld.GameWorld
+import com.mygdx.GameWorld.GameRenderer
+import com.mygdx.GameWorld.GameWorld
 import kotlin.properties.Delegates
 
 
-public class LevelScreen(val game : DvHGame) : Screen
+public class LevelScreen(val choosingScreen : ChoosingScreen, val game : DvHGame, ai : Boolean = false) : Screen
 {
     private var renderer : GameRenderer by Delegates.notNull<GameRenderer>()
     private var gameIsEnded = false
+    private val gameWorld = GameWorld()
     init {
-        AssetLoader.gameWorld = GameWorld()
-        renderer = GameRenderer(AssetLoader.gameWorld)
+        renderer = GameRenderer(gameWorld)
         //without calling function below everything will go to hell crashing
-        AssetLoader.gameWorld.initPlayersAndEverythingNeedingThem(renderer)
+        gameWorld.initPlayersAndEverythingNeedingThem(renderer, ai)
     }
 
     private fun getThisScreen() : LevelScreen {
@@ -51,7 +51,7 @@ public class LevelScreen(val game : DvHGame) : Screen
             restart.addListener(object : ClickListener()
             {
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                    game.screen = ChoosingScreen(game, getThisScreen())
+                    choosingScreen.regainControl(getThisScreen())
                 }
             })
 
@@ -60,14 +60,14 @@ public class LevelScreen(val game : DvHGame) : Screen
 
             restart.setPosition((screenWidth - width) / 2, screenHeight/ 2 - height /2)
 
-            AssetLoader.gameWorld.stage.addActor(restart)
-            Gdx.input.inputProcessor = AssetLoader.gameWorld.stage
+            gameWorld.stage.addActor(restart)
+            Gdx.input.inputProcessor = gameWorld.stage
         }
     }
 
     override fun dispose() {
         renderer.dispose()
-        AssetLoader.gameWorld.dispose()
+        gameWorld.dispose()
     }
 
     override fun show() {}

@@ -14,12 +14,16 @@ import com.badlogic.gdx.utils.viewport.FitViewport
 import com.mygdx.Helpers.AssetLoader
 import com.mygdx.game.DvHGame
 
-public class ChoosingScreen(game : DvHGame, prevLevelScreen: LevelScreen? = null) : Screen
+public class ChoosingScreen(val game : DvHGame, prevLevelScreen: LevelScreen? = null) : Screen
 {
     private val batcher = SpriteBatch()
     private val stage   = Stage(FitViewport(Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat()), batcher)
 
     val font = AssetLoader.generateFont("Doux Medium.ttf", 40, Color.WHITE)
+
+    private fun getThisScreen() : ChoosingScreen {
+        return this
+    }
 
     init
     {
@@ -41,14 +45,14 @@ public class ChoosingScreen(game : DvHGame, prevLevelScreen: LevelScreen? = null
         single.addListener(object : ClickListener()
         {
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                game.screen = LevelScreen(game)
+                game.screen = LevelScreen(getThisScreen(), game, true)
             }
         })
 
         multi.addListener(object : ClickListener()
         {
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                game.screen = LevelScreen(game)
+                game.screen = LevelScreen(getThisScreen(), game)
             }
         })
 
@@ -63,7 +67,11 @@ public class ChoosingScreen(game : DvHGame, prevLevelScreen: LevelScreen? = null
         Gdx.input.inputProcessor = stage
     }
 
-
+    public fun regainControl(prevScreen : Screen) {
+        prevScreen.dispose()
+        game.screen = this
+        Gdx.input.inputProcessor = stage
+    }
 
     override fun pause() {
        // Gdx.app.log("Screen", "paused")
