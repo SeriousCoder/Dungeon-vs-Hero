@@ -1,13 +1,18 @@
 apply plugin: "kotlin"
 
 buildscript {
+
+    ext {
+        kotlin_version = '1.0.0-beta-1103'
+    }
+
     repositories {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.2.3'
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:0.13.1514'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
@@ -71,12 +76,10 @@ project(":android") {
 
 project(":core") {
     apply plugin: "java"
-    apply plugin: "kotlin"
 
 
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-            compile 'org.jetbrains.kotlin:kotlin-stdlib:0.13.1514'
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
