@@ -49,13 +49,14 @@ class GameRenderer(val gameWorld: GameWorld) {
         val rand = Random(System.currentTimeMillis())
         for (i in 0..field.width - 1)
             for (j in 0..field.height - 1)
-        {
-            if (Math.abs(rand.nextInt()) % 100 < 20)
             {
-                newField[i][j] = hexRock
-                field.field[i][j].occupied = true
+                if (Math.abs(rand.nextInt()) % 100 < 20)
+                {
+                    newField[i][j] = hexRock
+                    field.field[i][j].occupied = true
+                }
             }
-        }
+
         return newField
     }
 
