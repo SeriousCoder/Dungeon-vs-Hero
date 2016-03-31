@@ -44,15 +44,17 @@ public class ChoosingScreen(val game : DvHGame, prevLevelScreen: LevelScreen? = 
 
         single.addListener(object : ClickListener()
         {
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) : Boolean{
                 game.screen = LevelScreen(getThisScreen(), game, true)
+                return true
             }
         })
 
         multi.addListener(object : ClickListener()
         {
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) : Boolean{
                 game.screen = LevelScreen(getThisScreen(), game)
+                return true
             }
         })
 
