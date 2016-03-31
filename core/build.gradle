@@ -5,11 +5,12 @@ apply plugin: 'kotlin'
 
 sourceSets {
     main.java.srcDirs = [ "src/" ]
+    main.kotlin.srcDirs = [ "src/" ]
 }
 
 buildscript {
     ext {
-        kotlin_version = '1.0.0-beta-1103'
+        kotlin_version = '1.0.1-2'
     }
 
     repositories {
@@ -27,4 +28,5 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
 }

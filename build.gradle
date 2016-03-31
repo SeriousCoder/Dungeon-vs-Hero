@@ -3,7 +3,7 @@ apply plugin: "kotlin"
 buildscript {
 
     ext {
-        kotlin_version = '1.0.0-beta-1103'
+        kotlin_version = '1.0.1-2'
     }
 
     repositories {
@@ -40,19 +40,20 @@ allprojects {
 project(":desktop") {
     apply plugin: "java"
 
-
     dependencies {
         compile project(":core")
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+        compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
     }
 }
 
 project(":android") {
-    apply plugin: "android"
-
+   // apply plugin: "android"
+    apply plugin: 'com.android.application'
+   // apply plugin: 'kotlin-android'
     configurations { natives }
 
     dependencies {
@@ -76,7 +77,6 @@ project(":android") {
 
 project(":core") {
     apply plugin: "java"
-
 
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"

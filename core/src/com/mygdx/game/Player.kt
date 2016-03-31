@@ -86,7 +86,7 @@ public class Player(private val gameWorld: GameWorld, gameRenderer: GameRenderer
                     continue
                 }
 
-                var listMoves : ArrayList<Pair<Int, Int>> = arrayListOf()
+                var listMoves : MutableList<Pair<Int, Int>> = arrayListOf()
 
                 if (x != 0) listMoves.add(Pair(x - 1, y))
                 if (x != 8) listMoves.add(Pair(x + 1, y))
@@ -104,7 +104,7 @@ public class Player(private val gameWorld: GameWorld, gameRenderer: GameRenderer
                     listMoves.add(Pair(x + 1, y + 1))
                 }
 
-                listMoves.sort(compClass())
+                listMoves.sortedWith(compClass())
 
                 var ind = 0
 
