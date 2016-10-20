@@ -50,8 +50,9 @@ public class LevelScreen(val choosingScreen : ChoosingScreen, val game : DvHGame
             restart.height = height
             restart.addListener(object : ClickListener()
             {
-                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) : Boolean{
                     choosingScreen.regainControl(getThisScreen())
+                    return true
                 }
             })
 

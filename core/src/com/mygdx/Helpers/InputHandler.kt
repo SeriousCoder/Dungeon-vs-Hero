@@ -30,7 +30,7 @@ class InputHandler (private val gameWorld: GameWorld,
     var actorsActionPoints : Label by Delegates.notNull<Label>()
     var skillDescription   : Label by Delegates.notNull<Label>()
 
-    val actorsSkillsBtns = arrayListOf<ArrayList<ImageButton>>()
+    val actorsSkillsBtns = arrayListOf<MutableList<ImageButton>>()
     var dataHasBeenGot   = false
 
     init {

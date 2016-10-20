@@ -22,7 +22,7 @@ public class MainScreen(val game : DvHGame) : Screen
 
     init
     {
-        stage.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true);
+       // stage.viewport.update(Gdx.graphics.width, Gdx.graphics.height, true);
         val play = ImageButton(AssetLoader.getImageButtonStyle(0, 0, 0, 0, 150, 150))
 
         play.addListener(object : ClickListener()
@@ -75,7 +75,7 @@ public class MainScreen(val game : DvHGame) : Screen
         val fps = (1/delta)
 
         batcher.begin()
-        batcher.draw(AssetLoader.backgroungs, 0f, 0f)
+        batcher.draw(AssetLoader.background, 0f, 0f)
         batcher.end()
 
   //      Gdx.app.log("FPS", fps.toString() + "")

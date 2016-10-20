@@ -12,7 +12,6 @@ import com.mygdx.Helpers.AssetLoader
 import com.mygdx.screens.*
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.EarClippingTriangulator
-import kotlin.properties.Delegates
 import com.badlogic.gdx.ApplicationListener
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.Batch
@@ -51,7 +50,8 @@ public class DvHGame() : Game() {
 
     public override fun create() {
         Gdx.app.log("Game", "created")
-        setScreen(MainScreen(this))
+        //setScreen(MainScreen(this))
+        setScreen(ChoosingScreen(this))
     }
 
     public override fun dispose() {

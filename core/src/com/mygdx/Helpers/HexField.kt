@@ -90,7 +90,7 @@ public class HexField() {
         return null
     }
 
-    public fun hexesInVicinityRadius(i : Int, j : Int, r : Int = 1) : ArrayList<Pair<Int, Int>>?{
+    public fun hexesInVicinityRadius(i : Int, j : Int, r : Int = 1) : MutableList<Pair<Int, Int>>?{
         if (r < 0)  return null
         if (r == 0) return arrayListOf(Pair(i, j))
 
@@ -111,10 +111,10 @@ public class HexField() {
             res.addAll(temp)
             curR--
         }
-        return res.toArrayList()
+        return res.toMutableList()//toArrayList()
     }
 
-    private fun hexesInVicinity(i : Int, j : Int) : ArrayList<Pair<Int, Int>> {
+    private fun hexesInVicinity(i : Int, j : Int) : MutableList<Pair<Int, Int>> {
         val res = arrayListOf<Pair<Int, Int>>()
         if (i % 2 == 0) {
             //columns 0, 2, ...

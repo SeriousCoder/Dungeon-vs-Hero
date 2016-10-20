@@ -11,19 +11,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.mygdx.GameWorld.GameWorld
-import kotlin.properties.Delegates
 
 object AssetLoader
 {
-    public var backgroungs : Texture by Delegates.notNull<Texture>()
-    public var buttons : Texture by Delegates.notNull<Texture>()
-    public var units : Texture by Delegates.notNull<Texture>()
+    public lateinit var background: Texture// by Delegates.notNull<Texture>()
+    public lateinit var buttons : Texture// by Delegates.notNull<Texture>()
+    public lateinit var units : Texture// by Delegates.notNull<Texture>()
 
    // public var gameWorld : GameWorld by Delegates.notNull<GameWorld>()
 
     init
     {
-        backgroungs = Texture(Gdx.files.internal("Data/Images/main2.jpg"))
+        background = Texture(Gdx.files.internal("Data/Images/main2.jpg"))
         units = Texture(Gdx.files.internal("Data/Images/archer.png"))
         buttons = Texture(Gdx.files.internal("Data/Images/playBtn.png"))
     }

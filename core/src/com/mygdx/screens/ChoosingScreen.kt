@@ -19,7 +19,7 @@ public class ChoosingScreen(val game : DvHGame, prevLevelScreen: LevelScreen? = 
     private val batcher = SpriteBatch()
     private val stage   = Stage(FitViewport(Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat()), batcher)
 
-    val font = AssetLoader.generateFont("Doux Medium.ttf", 40, Color.WHITE)
+    //val font = AssetLoader.generateFont("Doux Medium.ttf", 40, Color.WHITE)
 
     private fun getThisScreen() : ChoosingScreen {
         return this
@@ -44,15 +44,17 @@ public class ChoosingScreen(val game : DvHGame, prevLevelScreen: LevelScreen? = 
 
         single.addListener(object : ClickListener()
         {
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) : Boolean{
                 game.screen = LevelScreen(getThisScreen(), game, true)
+                return true
             }
         })
 
         multi.addListener(object : ClickListener()
         {
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) : Boolean{
                 game.screen = LevelScreen(getThisScreen(), game)
+                return true
             }
         })
 
@@ -90,10 +92,10 @@ public class ChoosingScreen(val game : DvHGame, prevLevelScreen: LevelScreen? = 
         Gdx.gl.glClearColor(0/255.0f, 0/255.0f, 0/255.0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-        val fps = (1/delta)
+     //   val fps = (1/delta)
 
         batcher.begin()
-        batcher.draw(AssetLoader.backgroungs, 0f, 0f)
+        batcher.draw(AssetLoader.background, 0f, 0f)
         batcher.end()
 
         //      Gdx.app.log("FPS", fps.toString() + "")
